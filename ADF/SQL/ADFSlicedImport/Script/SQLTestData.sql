@@ -10,8 +10,6 @@ INSERT INTO [Core].[SlicedImportObject]
            ,[DestinationObject]
            ,[DestinationPath]
            ,[DestinationFileName]
-           ,[DestinationPostfix]
-           ,[DestinationFileFormat]
            )
      VALUES
            ('AdventureWorksLT'
@@ -23,8 +21,6 @@ INSERT INTO [Core].[SlicedImportObject]
            ,'SalesOrderHeader'
            ,'AdventureWorksLT_SalesLT/SalesOrderID_lt71815'
            ,'SalesOrderHeader_lt71815'
-           ,''
-           ,'.parquet'
            );
 
 
@@ -38,8 +34,6 @@ INSERT INTO [Core].[SlicedImportObject]
            ,[DestinationObject]
            ,[DestinationPath]
            ,[DestinationFileName]
-           ,[DestinationPostfix]
-           ,[DestinationFileFormat]
            )
      VALUES
            ('AdventureWorksLT'
@@ -51,8 +45,6 @@ INSERT INTO [Core].[SlicedImportObject]
            ,'SalesOrderHeader'
            ,'AdventureWorksLT_SalesLT/SalesOrderID_ge71815'
            ,'SalesOrderHeader_ge71815'
-           ,''
-           ,'.parquet'
            )
 GO
 
