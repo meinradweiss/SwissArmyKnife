@@ -124,6 +124,7 @@
     <Folder Include="Core\Tables\" />
     <Folder Include="Core\Stored Procedures\" />
     <Folder Include="Security\" />
+    <Folder Include="Script" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Core\Tables\SlicedImportObject.sql">
@@ -143,5 +144,8 @@
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Security\Core.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Script\SQLTestData.sql" />
   </ItemGroup>
 </Project>
