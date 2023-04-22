@@ -1,7 +1,10 @@
 ﻿DELETE FROM [Core].[SlicedImportObject] WHERE [SourceSystemName] = 'AdventureWorksLT';
 
+
+
 INSERT INTO [Core].[SlicedImportObject]
-           ([SourceSystemName]
+           ([SlicedImportObject_Id]
+		   ,[SourceSystemName]
            ,[SourceSchema]
            ,[SourceObject]
            ,[GetDataCommand]
@@ -12,7 +15,8 @@ INSERT INTO [Core].[SlicedImportObject]
            ,[DestinationFileName]
            )
      VALUES
-           ('AdventureWorksLT'
+           ('37C8B38B-B913-4593-B1F2-68EDCB5DC60F'
+		   ,'AdventureWorksLT'
            ,'SalesLT'
            ,'SalesOrderHeader'
            ,'SELECT [SalesOrderID], [RevisionNumber], [OrderDate], [Status] FROM [SalesLT].[SalesOrderHeader]'
@@ -25,7 +29,8 @@ INSERT INTO [Core].[SlicedImportObject]
 
 
 INSERT INTO [Core].[SlicedImportObject]
-           ([SourceSystemName]
+           ([SlicedImportObject_Id]
+		   ,[SourceSystemName]
            ,[SourceSchema]
            ,[SourceObject]
            ,[GetDataCommand]
@@ -36,7 +41,8 @@ INSERT INTO [Core].[SlicedImportObject]
            ,[DestinationFileName]
            )
      VALUES
-           ('AdventureWorksLT'
+           ('2A1ACA0A-F6F4-4E66-8210-BDA581CD28B8'
+		   ,'AdventureWorksLT'
            ,'SalesLT'
            ,'SalesOrderHeader'
            ,'SELECT [SalesOrderID], [RevisionNumber], [OrderDate], [Status] FROM [SalesLT].[SalesOrderHeader]'
@@ -50,9 +56,17 @@ GO
 
 
 EXEC [Core].[GetSetSlicedImportObjectToLoad] 'AdventureWorksLT'
-EXEC [Core].[SetSlicedImportObjectStart] '31E8E33A-CEFA-4934-B38F-645761C692CF'
+EXEC [Core].[SetSlicedImportObjectStart] '37C8B38B-B913-4593-B1F2-68EDCB5DC60F'
 EXEC [Core].[GetSetSlicedImportObjectToLoad] 'AdventureWorksLT'
-EXEC [Core].[SetSlicedImportObjectEnd] '31E8E33A-CEFA-4934-B38F-645761C692CF', 33
+EXEC [Core].[SetSlicedImportObjectEnd] '37C8B38B-B913-4593-B1F2-68EDCB5DC60F', 33
 
 SELECT * FROM [Core].[SlicedImportObject]
 
+
+EXEC [Core].[SetSlicedImportObjectStart] '2A1ACA0A-F6F4-4E66-8210-BDA581CD28B8'
+
+EXEC [Core].[ResetSlicedImportObject] '', '2A1ACA0A-F6F4-4E66-8210-BDA581CD28B8'
+
+EXEC [Core].[ResetSlicedImportObject] 'AdventureWorksLT', '2A1ACA0A-F6F4-4E66-8210-BDA581CD28B8'
+
+EXEC [Core].[ResetSlicedImportObject] 'AdventureWorksLT'

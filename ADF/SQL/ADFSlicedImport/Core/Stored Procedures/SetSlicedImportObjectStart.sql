@@ -19,6 +19,7 @@ BEGIN
 	    ,[GetDataCommand] 
 	    ,[FilterDataCommand]
         ,CONCAT([GetDataCommand], ' ', [FilterDataCommand]) AS [SelectCommand]
+		,CONCAT('TRUNCATE TABLE ', QUOTENAME([DestinationSchema]), '.',QUOTENAME([DestinationObject])) AS [TruncateDestinationTableCommand]
 	    ,[DestinationSchema] 
 	    ,[DestinationObject] 
 	    ,[DestinationPath] 
@@ -26,8 +27,6 @@ BEGIN
 	    ,[DestinationPostfix] 
 	    ,[DestinationFileFormat] 
 	    ,[LastStart] 
-
-
     FROM [Core].[SlicedImportObject]
     WHERE [SlicedImportObject_Id] = @SlicedImportObject_Id;
 END;

@@ -144,6 +144,10 @@
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Security\Core.sql" />
+    <Build Include="Core\Stored Procedures\ResetSlicedImportObject.sql">
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <None Include="Script\SQLTestData.sql" />
