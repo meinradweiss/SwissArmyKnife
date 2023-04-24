@@ -11,6 +11,7 @@ INSERT INTO [Core].[SlicedImportObject]
            ,[FilterDataCommand]
            ,[DestinationSchema]
            ,[DestinationObject]
+           ,[ContainerName]
            ,[DestinationPath]
            ,[DestinationFileName]
            )
@@ -23,6 +24,7 @@ INSERT INTO [Core].[SlicedImportObject]
            ,'WHERE [SalesOrderID] < 71815'
            ,'AdventureWorksLT_SalesLT'
            ,'SalesOrderHeader'
+           ,'adf-to-powerbi'
            ,'AdventureWorksLT_SalesLT/SalesOrderID_lt71815'
            ,'SalesOrderHeader_lt71815'
            );
@@ -37,6 +39,7 @@ INSERT INTO [Core].[SlicedImportObject]
            ,[FilterDataCommand]
            ,[DestinationSchema]
            ,[DestinationObject]
+           ,[ContainerName]
            ,[DestinationPath]
            ,[DestinationFileName]
            )
@@ -49,6 +52,7 @@ INSERT INTO [Core].[SlicedImportObject]
            ,'WHERE [SalesOrderID] >= 71815'
            ,'AdventureWorksLT_SalesLT'
            ,'SalesOrderHeader'
+           ,'adf-to-powerbi'
            ,'AdventureWorksLT_SalesLT/SalesOrderID_ge71815'
            ,'SalesOrderHeader_ge71815'
            )
