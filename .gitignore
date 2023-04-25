@@ -10,6 +10,9 @@
 *.userosscache
 *.sln.docstates
 
+#Schema compare files
+*.scmp
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
