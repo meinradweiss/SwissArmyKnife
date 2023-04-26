@@ -119,3 +119,41 @@ SELECT CONVERT(DATETIME2,value)  as PartitionStartRange
     INNER JOIN sys.partition_range_values AS pfrv
         ON PF.function_id = pfrv.function_id
         WHERE pf.name = 'monthDateTimePartitionFunction'
+
+
+/*
+DROP TABLE PartitionTest;
+
+CREATE TABLE PartitionTest
+(
+    Id           INT NOT NULL 
+   ,Name         VARCHAR(255)
+   ,CreationDate DATETIME2 NOT NULL
+)
+ON [monthDateTimePartitionScheme](CreationDate);
+
+
+CREATE CLUSTERED INDEX IX_1 ON PartitionTest(Id, CreationDate)
+ON [monthDateTimePartitionScheme](CreationDate);
+GO
+
+INSERT INTO PartitionTest VALUES (10,'A', '2023-06-01 00:00:00.0000000')
+INSERT INTO PartitionTest VALUES (20,'A', '2023-07-01 00:00:00.0000000')
+INSERT INTO PartitionTest VALUES (21,'A', '2023-07-01 10:00:00.0000000')
+INSERT INTO PartitionTest VALUES (30,'A', '2023-08-01 00:00:00.0000000')
+
+SELECT 
+p.partition_number AS PartitionNumber,
+f.name AS PartitionFilegroup, 
+p.rows AS NumberOfRows 
+FROM sys.partitions p
+JOIN sys.destination_data_spaces dds ON p.partition_number = dds.destination_id
+JOIN sys.filegroups f ON dds.data_space_id = f.data_space_id
+WHERE OBJECT_NAME(OBJECT_ID) = 'PartitionTest'
+
+
+ALTER INDEX ALL ON PartitionTest REBUILD PARTITION = 9 WITH (ONLINE=ON)
+
+
+
+*/

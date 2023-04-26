@@ -14,6 +14,7 @@ INSERT INTO [Core].[SlicedImportObject]
            ,[ContainerName]
            ,[DestinationPath]
            ,[DestinationFileName]
+		   ,[MaxRowsPerFile]
            )
      VALUES
            ('37C8B38B-B913-4593-B1F2-68EDCB5DC60F'
@@ -22,11 +23,12 @@ INSERT INTO [Core].[SlicedImportObject]
            ,'SalesOrderHeader'
            ,'SELECT [SalesOrderID], [RevisionNumber], [OrderDate], [Status] FROM [SalesLT].[SalesOrderHeader]'
            ,'WHERE [SalesOrderID] < 71815'
-           ,'AdventureWorksLT_SalesLT'
+           ,'AdventureWorksLT_SalesLT_Sliced'
            ,'SalesOrderHeader'
            ,'adf-to-powerbi'
-           ,'AdventureWorksLT_SalesLT/SalesOrderID_lt71815'
+           ,'raw/SlicedImport/AdventureWorksLT/SalesLT/SalesOrder/SalesOrderID_lt71815'
            ,'SalesOrderHeader_lt71815'
+		   ,5
            );
 
 
@@ -42,6 +44,7 @@ INSERT INTO [Core].[SlicedImportObject]
            ,[ContainerName]
            ,[DestinationPath]
            ,[DestinationFileName]
+		   ,[MaxRowsPerFile]
            )
      VALUES
            ('2A1ACA0A-F6F4-4E66-8210-BDA581CD28B8'
@@ -50,11 +53,12 @@ INSERT INTO [Core].[SlicedImportObject]
            ,'SalesOrderHeader'
            ,'SELECT [SalesOrderID], [RevisionNumber], [OrderDate], [Status] FROM [SalesLT].[SalesOrderHeader]'
            ,'WHERE [SalesOrderID] >= 71815'
-           ,'AdventureWorksLT_SalesLT'
+           ,'AdventureWorksLT_SalesLT_Sliced'
            ,'SalesOrderHeader'
            ,'adf-to-powerbi'
-           ,'AdventureWorksLT_SalesLT/SalesOrderID_ge71815'
+           ,'raw/SlicedImport/AdventureWorksLT/SalesLT/SalesOrder/SalesOrderID_ge71815'
            ,'SalesOrderHeader_ge71815'
+		   ,5
            )
 GO
 
@@ -74,3 +78,11 @@ EXEC [Core].[ResetSlicedImportObject] '', '2A1ACA0A-F6F4-4E66-8210-BDA581CD28B8'
 EXEC [Core].[ResetSlicedImportObject] 'AdventureWorksLT', '2A1ACA0A-F6F4-4E66-8210-BDA581CD28B8'
 
 EXEC [Core].[ResetSlicedImportObject] 'AdventureWorksLT'
+
+
+IF OBJECT_ID('[AdventureWorksLT_SalesLT_Sliced].[SalesOrderHeader]') IS NOT NULL DELETE FROM [AdventureWorksLT_SalesLT_Sliced].[SalesOrderHeader] WHERE [SalesOrderID] >= 71815
+
+IF OBJECT_ID('[AdventureWorksLT_SalesLT_Sliced].[SalesOrderHeader]') IS NOT NULL DELETE FROM [AdventureWorksLT_SalesLT_Sliced].[SalesOrderHeader] WHERE [SalesOrderID] >= 71815
+IF OBJECT_ID('[AdventureWorksLT_SalesLT_Sliced].[SalesOrderHeader]') IS NOT NULL DELETE FROM [AdventureWorksLT_SalesLT_Sliced].[SalesOrderHeader] WHERE [SalesOrderID] >= 71815
+
+SELECT OBJECT_ID('[AdventureWorksLT_SalesLT_Sliced].[SalesOrderHeader]')
