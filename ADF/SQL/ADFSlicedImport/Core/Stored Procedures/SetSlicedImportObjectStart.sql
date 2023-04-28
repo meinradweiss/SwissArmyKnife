@@ -1,4 +1,5 @@
 ﻿
+
 CREATE PROCEDURE [Core].[SetSlicedImportObjectStart]
     @SlicedImportObject_Id uniqueidentifier
 AS
@@ -29,6 +30,8 @@ BEGIN
 	    ,[DestinationFileFormat] 
 		,CONCAT([DestinationFileName], [DestinationFileFormat]) AS [FullDestinationFileName]
 		,[MaxRowsPerFile]
+		,[AdditionalContext]
+		,CONCAT('.drop extents <| .show table ' , DestinationObject , ' extents  |  where MinCreatedOn ==  ''' ,  REPLACE(JSON_VALUE(AdditionalContext, '$.creationTime'), '.','-') ,'''' ) AS ADX_DropExtentCommand 
 	    ,[LastStart] 
     FROM [Core].[SlicedImportObject]
     WHERE [SlicedImportObject_Id] = @SlicedImportObject_Id;

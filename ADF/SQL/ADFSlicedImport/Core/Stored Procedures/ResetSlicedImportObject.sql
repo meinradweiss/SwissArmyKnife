@@ -13,7 +13,7 @@ BEGIN
        ,[LastSuccessEnd] = NULL
        ,[LastErrorMessage] = NULL
 	   ,[RowsTransferred] = NULL
-    WHERE @SourceSystemName LIKE ISNULL(@SourceSystemName,'%')
+    WHERE [SourceSystemName] LIKE ISNULL(@SourceSystemName,'%')
       AND (@SlicedImportObject_Id IS NULL
        OR [SlicedImportObject_Id] = @SlicedImportObject_Id);
    END

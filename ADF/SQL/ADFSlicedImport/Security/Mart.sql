@@ -1,5 +1,3 @@
-﻿CREATE SCHEMA [Core]
+﻿CREATE SCHEMA [Mart]
     AUTHORIZATION [dbo];
-
-
 

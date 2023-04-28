@@ -1,0 +1,27 @@
+﻿CREATE VIEW [Mart].[SlicedImportObject]
+AS
+
+  SELECT 
+       [SlicedImportObject_Id]
+      ,[SourceSystemName]
+      ,[SourceSchema]
+      ,[SourceObject]
+      ,[GetDataCommand]
+      ,[FilterDataCommand]
+      ,[DestinationSchema]
+      ,[DestinationObject]
+      ,[ContainerName]
+      ,[DestinationPath]
+      ,[DestinationFileName]
+      ,[DestinationPostfix]
+      ,[DestinationFileFormat]
+      ,[MaxRowsPerFile]
+      ,[AdditionalContext]
+      ,[LastStart]
+      ,[LastSuccessEnd]
+      ,DATEDIFF(SECOND, [LastStart], [LastSuccessEnd]) AS DurationInSecond
+      ,[RowsTransferred]
+      ,[LastErrorMessage]
+      ,[CreatedBy]
+      ,[CreatedAt]
+  FROM [Core].[SlicedImportObject]

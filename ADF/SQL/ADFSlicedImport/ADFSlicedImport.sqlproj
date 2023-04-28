@@ -125,6 +125,8 @@
     <Folder Include="Core\Stored Procedures\" />
     <Folder Include="Security\" />
     <Folder Include="Script" />
+    <Folder Include="Mart\" />
+    <Folder Include="Mart\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Core\Tables\SlicedImportObject.sql">
@@ -148,6 +150,19 @@
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
+    <Build Include="Mart\Views\SlicedImportObject.sql">
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="Core\Stored Procedures\SetSlicedImportObjectError.sql">
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="Core\Stored Procedures\GetADXDropExtentsCommand.sql">
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="Security\Mart.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Script\SQLTestData.sql" />
