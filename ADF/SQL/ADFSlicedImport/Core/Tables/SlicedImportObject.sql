@@ -10,10 +10,9 @@
     [ContainerName]         [sysname]        NULL,
     [DestinationPath]       [sysname]        NULL,
     [DestinationFileName]   [sysname]        NULL,
-    [DestinationPostfix]    [sysname]        NULL,
     [DestinationFileFormat] VARCHAR (10)     DEFAULT ('.parquet') NOT NULL,
-    [MaxRowsPerFile]                     INT              NULL,
-    [AdditionalContext]      VARCHAR (255)    NULL, -- e.g. for ADX '{"creationTime": "2022.01.01"}'
+    [MaxRowsPerFile]        INT              NULL,
+    [AdditionalContext]     VARCHAR (255)    NULL, -- e.g. for ADX '{"creationTime": "2022.01.01"}'
     [LastStart]             DATETIME         NULL,
     [LastSuccessEnd]        DATETIME         NULL,
     [RowsTransferred]       INT              NULL,

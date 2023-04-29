@@ -26,7 +26,6 @@ BEGIN
 		,[ContainerName]
 	    ,[DestinationPath] 
 	    ,[DestinationFileName] 
-	    ,[DestinationPostfix] 
 	    ,[DestinationFileFormat] 
 		,CONCAT([DestinationFileName], [DestinationFileFormat]) AS [FullDestinationFileName]
 		,[MaxRowsPerFile]

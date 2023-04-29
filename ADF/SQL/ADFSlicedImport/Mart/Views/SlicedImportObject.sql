@@ -13,7 +13,6 @@ AS
       ,[ContainerName]
       ,[DestinationPath]
       ,[DestinationFileName]
-      ,[DestinationPostfix]
       ,[DestinationFileFormat]
       ,[MaxRowsPerFile]
       ,[AdditionalContext]

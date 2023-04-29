@@ -127,6 +127,9 @@
     <Folder Include="Script" />
     <Folder Include="Mart\" />
     <Folder Include="Mart\Views\" />
+    <Folder Include="Helper\" />
+    <Folder Include="Helper\Views\" />
+    <Folder Include="Helper\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Core\Tables\SlicedImportObject.sql">
@@ -163,6 +166,15 @@
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Security\Mart.sql" />
+    <Build Include="Helper\Views\RowNumberList100K.sql">
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="Helper\Stored Procedures\GenerateSliceMetaData.sql">
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="Security\Helper.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Script\SQLTestData.sql" />
