@@ -34,8 +34,8 @@ BEGIN
     	--   //Use in ADX
 	    --   .show table <YourTable> extents
         --   | extend  Timestamp = todatetime(extract("LoadedAt='(.*)'", 1, Tags))
-		,JSON_MODIFY(JSON_MODIFY([AdditionalContext], 'append $.tags', CONCAT('LoadedAt:''', CONVERT(VARCHAR,GETUTCDATE(),126),''''))
-		                                            , 'append $.tags', CONCAT('SlicedImportObject_Id:''', CONVERT(VARCHAR(64), @SlicedImportObject_Id),''''))                                                                   AS [AdditionalContext]
+		,JSON_MODIFY(JSON_MODIFY([AdditionalContext], 'append $.tags', CONCAT('LoadedAt:', CONVERT(VARCHAR,GETUTCDATE(),126),''))
+		                                            , 'append $.tags', CONCAT('SlicedImportObject_Id:', CONVERT(VARCHAR(64), @SlicedImportObject_Id),''))                                                                   AS [AdditionalContext]
 		,CONCAT('.drop extents <| .show table ' , DestinationObject , ' extents  |  where MinCreatedOn ==  ''' ,  REPLACE(JSON_VALUE(AdditionalContext, '$.creationTime'), '.','-') ,'''' ) AS ADX_DropExtentCommand 
 	    ,[LastStart] 
     FROM [Core].[SlicedImportObject]

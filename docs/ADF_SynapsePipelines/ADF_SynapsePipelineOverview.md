@@ -5,24 +5,45 @@
 
 If data is migrated from an on-premises system to a modern data warehouse or in an Azure Data eXplorer (ADX) database, then historical data must be migrated to the new data services in Azure. </br>
 The sliced data migration toolbox provides framework components to simplify the data migration.
-The backend of the toolbox is build in an Azure SQL Database and the real datatransfer will be handled either by an Azure Data Factory or a Synapse pipeline.
+
+### Meta data
+
+The backend of the toolbox is build in an Azure SQL Database and the real data transfer will be handled either by an Azure Data Factory or a Synapse pipeline.
 The toolbox allows you to define:
  * Data transfer application name
  * Source object
  * Destination object
  * Start date 
  * End date
- * Filter attribute name
+ * Filter attribute name [^1]
  * Slice size (day or month)
  * Max number of rows (for opptional parquet file in the data lake)
 
+### Common transfer stages
+
 Depending on the shape of the pipeline you can choose one of the following options:
- * SQL Source[^2] -> Database destination 
- * SQL Source -> Data lake -> Database destination
+ * SQL Source[^2] -> Database destination[^3] 
+ * SQL Source[^2] -> Data lake -> Database destination[^3] 
 
-Target can be the data lake, data lake + database (e.g. SQL or ADX). Because of the fact that historical data can be huge it's not recommended to load all data in one job/one transaction. 
+### Main Benefits of the toolbox
 
-[^2]: Any SQL source that supports ANSI SQL 
+The toolbox provides the following main benefits
+
+ * Huge datasets can be loaded in well defined slices
+ * Slices can be loaded parallel (pipeline defines how many parallel loads are executed)
+ * If a slice fails, then it can be restarted, without data duplication
+ * Transfer is logged in the meta data database (duration, number of rows transferred)
+ * If an ADX cluster is the target, than `creationTime` is set correctly and also the follwowing tags are added 
+   * "Source:PipelineLoad"
+   * "LoadedAt:\<UTC date of data load\>",
+   * "SlicedImportObject_Id:\<SlicedImportObject_Id of the slice \>"] 
+
+
+
+
+[^1]: Data data type is expected. 
+[^2]: Any SQL source that supports ANSI SQL. 
+[^3]: Any pipeline sink that supports insert/apppend. Samples provided for Azure SQL and Azure Data Explorer.
 
 </br>
 </br>
