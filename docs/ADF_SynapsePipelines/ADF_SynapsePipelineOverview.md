@@ -17,13 +17,13 @@ The toolbox allows you to define:
  * End date
  * Filter attribute name [^1]
  * Slice size (day or month)
- * Max number of rows (for opptional parquet file in the data lake)
+ * Max number of rows (for optional raw data parquet file in the data lake)
 
 ### Common transfer stages
 
 Depending on the shape of the pipeline you can choose one of the following options:
- * SQL Source[^2] -> Database destination[^3] 
- * SQL Source[^2] -> Data lake -> Database destination[^3] 
+ * SQL Source[^2] -> Database destination (e.g. SQL, PostgreSQL, ADX, ...) [^3] 
+ * SQL Source[^2] -> Data lake -> Database destination (e.g. SQL, PostgreSQL, ADX, ...)[^3] 
 
 ### Main Benefits of the toolbox
 
@@ -33,7 +33,7 @@ The toolbox provides the following main benefits
  * Slices can be loaded parallel (pipeline defines how many parallel loads are executed)
  * If a slice fails, then it can be restarted, without data duplication
  * Transfer is logged in the meta data database (duration, number of rows transferred)
- * If an ADX cluster is the target, than `creationTime` is set correctly and also the follwowing tags are added 
+ * If an ADX cluster is the target, than `creationTime` is set correctly and also the following `tags` are added 
    * "Source:PipelineLoad"
    * "LoadedAt:\<UTC date of data load\>",
    * "SlicedImportObject_Id:\<SlicedImportObject_Id of the slice \>"] 
