@@ -23,8 +23,8 @@ BEGIN
 
     DECLARE 
                 @LowWaterMark     DATE        = '2002-06-01'   -- GE
-               ,@HigWaterMark     DATE        = '2002-08-01'   -- LT   05
-        	   ,@Resolution       VARCHAR(25) = 'Month'   -- Day/Month
+               ,@HigWaterMark     DATE        = '2002-07-05'   -- LT   05
+        	   ,@Resolution       VARCHAR(25) = 'Day'   -- Day/Month
     		   ,@SourceSystemName sysname     = 'AdventureWorksLT_ADX'
     		   ,@ContainerName    sysname     = 'N/A'
     
@@ -45,6 +45,17 @@ BEGIN
     		   ,@AlternativeRootFolder   = NULL
     		   ,@MaxRowsPerFile          = NULL
 
+    GO
+
+     DECLARE    @LowWaterMark     DATE         = '2002-06-01'   -- GE
+               ,@HigWaterMark     DATE         = '2002-08-01'   -- LT   05
+        	   ,@Resolution       VARCHAR(25)  = 'Month'   -- Day/Month
+    		   ,@SourceSystemName sysname      = 'AdventureWorksLT'
+    		   ,@ContainerName    sysname      = 'adftopowerbi'
+    
+
+
+
     EXEC [Helper].[GenerateSliceMetaData] 
                 @LowWaterMark            = @LowWaterMark
                ,@HigWaterMark            = @HigWaterMark
@@ -55,11 +66,30 @@ BEGIN
     		   ,@GetDataCommand          = 'SELECT * FROM [SalesLT].[Customer]'
     		   ,@DateFilterAttributeName = '[RegistrationDate]'
     		   ,@DateFilterAttributeType = 'DATETIME'
-    		   ,@DestinationSchema       = 'N/A'
+    		   ,@DestinationSchema       = 'SalesLT_SDMT'
     		   ,@DestinationObject       = 'Customer'
     		   ,@ContainerName           = @ContainerName
     		   ,@AlternativeRootFolder   = NULL
     		   ,@MaxRowsPerFile          = NULL
+
+    EXEC [Helper].[GenerateSliceMetaData] 
+                @LowWaterMark            = @LowWaterMark
+               ,@HigWaterMark            = @HigWaterMark
+               ,@Resolution              = @Resolution
+               ,@SourceSystemName        = @SourceSystemName
+    		   ,@SourceSchema            = 'SalesLT'
+    		   ,@SourceObject            = 'Customer'
+    		   ,@GetDataCommand          = 'SELECT * FROM [SalesLT].[Customer]'
+    		   ,@DateFilterAttributeName = '[RegistrationDate]'
+    		   ,@DateFilterAttributeType = 'DATETIME'
+    		   ,@DestinationSchema       = 'SalesLT_SDMT'
+    		   ,@DestinationObject       = 'Customer'
+    		   ,@ContainerName           = @ContainerName
+    		   ,@AlternativeRootFolder   = NULL
+    		   ,@MaxRowsPerFile          = NULL
+
+
+
 
 	*/
 

@@ -22,7 +22,7 @@ BEGIN
      OR (@Mode = 'ALL'))
     AND [SourceSchema] LIKE @SourceSchema
     AND [SourceObject] LIKE @SourceObject 
-    AND CONVERT(VARCHAR(64), [SlicedImportObject_Id]) = @SlicedImportObject_Id 
+    AND CONVERT(VARCHAR(64), [SlicedImportObject_Id]) LIKE @SlicedImportObject_Id 
 
 
 END
