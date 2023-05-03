@@ -1,7 +1,29 @@
-# ADF Synspase Pipeline Overview
 
-If data is migrated from an on-premises system to a modern data warehouse or in an ADX database, then very often there is the need to load historical data to the new data structures in Azure. </br>
+# SDMT - Sliced data migration toolbox
+
+## Overview
+
+If data is migrated from an on-premises system to a modern data warehouse or in an Azure Data eXplorer (ADX) database, then historical data must be migrated to the new data services in Azure. </br>
+The sliced data migration toolbox provides framework components to simplify the data migration.
+The backend of the toolbox is build in an Azure SQL Database and the real datatransfer will be handled either by an Azure Data Factory or a Synapse pipeline.
+The toolbox allows you to define:
+ * Data transfer application name
+ * Source object
+ * Destination object
+ * Start date 
+ * End date
+ * Filter attribute name
+ * Slice size (day or month)
+ * Max number of rows (for opptional parquet file in the data lake)
+
+Depending on the shape of the pipeline you can choose one of the following options:
+ * SQL Source[^2] -> Database destination 
+ * SQL Source -> Data lake -> Database destination
+
 Target can be the data lake, data lake + database (e.g. SQL or ADX). Because of the fact that historical data can be huge it's not recommended to load all data in one job/one transaction. 
+
+[^2]: Any SQL source that supports ANSI SQL 
+
 </br>
 </br>
 The following database objects and corresponding Data Factory/Synapse pipeline artifacts help to load datasets in slices. The slice size can be defined by the consumer and it is possible to re-run slices if the transfer is not successful.
@@ -163,3 +185,31 @@ The stored procedure returns a result set with a single column named 'DropExtend
 .drop extents <| .show table SalesOrderHeader extents  |  where MinCreatedOn ==  '2023-01-01'
 .drop extents <| .show table SalesOrderHeader extents  |  where MinCreatedOn ==  '2022-01-01'
 </pre>
+
+
+</br>
+
+## [Helper].[GenerateSliceMetaData]
+
+The stored procedure called `[Helper].[GenerateSliceMetaData]` can be used to create the necessary metadata for slicing large data sets into smaller pieces based on a specified resolution, date range, and maximum number of rows per file, if data will be stored in the data lake. 
+
+</br>
+
+
+|Parameter Name | Data Type   | Default | Description |
+|---------------|-------------|---------|-------------|
+|@LowWaterMark  |DATE         |'2022.01.01'|The lower bound of the date range to generate slices for.|
+|@HigWaterMark  |DATE         |'2022.03.01'|The upper bound of the date range to generate slices for.|
+|@Resolution    |VARCHAR(25)  |'day'    |The time interval at which to generate slices. Valid values are 'day' and 'month'.|
+|@SourceSystemName|sysname    |N/A      |The name of the source system for the data.|
+|@SourceSchema  |sysname      |N/A      |The name of the schema containing the source object.|
+|@SourceObject  |sysname      |N/A      |The name of the source object.|
+|@GetDataCommand|nvarchar(max)|N/A      |The SQL command used to retrieve the source data.|
+|@DateFilterAttributeName|sysname|N/A |The name of the attribute in the source data that contains the date.|
+|@DateFilterAttributeType|sysname|N/A |The data type of the date attribute.|
+|@DestinationSchema|sysname   |N/A      |The name of the destination schema.|
+|@DestinationObject|sysname   |N/A      |The name of the destination object.|
+|@ContainerName |sysname      |N/A      |The name of the container where the sliced data will be stored.|
+|@AlternativeRootFolder|sysname|NULL   |If provided, then this value is used instead of the @SourceSystemName to create the directory path.|
+|@MaxRowsPerFile|int         |NULL     |The maximum number of rows to include in each slice file. |
+

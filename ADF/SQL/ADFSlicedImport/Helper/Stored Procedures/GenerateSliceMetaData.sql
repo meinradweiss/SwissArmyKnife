@@ -148,7 +148,7 @@ BEGIN
 																) ELSE '' END)
                                AS [DestinationFileName]
            ,@MaxRowsPerFile    AS [MaxRowsPerFile]
-           ,CONCAT('{"creationTime": "', CONVERT(VARCHAR, @TheDate) ,'","tags":"[''Pipeline Load'']"}')  -- Take the last day of the month       
+           ,CONCAT('{"creationTime": "', CONVERT(VARCHAR, @TheDate) ,'","tags":["Source:PipelineLoad"]}')  -- Take the last day of the month       
 		                       AS [AdditionalContext]
 
 
