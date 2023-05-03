@@ -3,7 +3,7 @@
 
 ## Overview
 
-If data is migrated from an on-premises system to a modern data warehouse or in an Azure Data eXplorer (ADX) database, then historical data must be migrated to the new data services in Azure. </br>
+If data is migrated from an on-premises system to a modern data warehouse or in an Azure Data eXplorer (ADX) database, then often historical data, must be migrated to the new data services in Azure. </br>
 The sliced data migration toolbox provides framework components to simplify the data migration.
 
 ### Meta data
@@ -47,7 +47,10 @@ The toolbox provides the following main benefits
 
 </br>
 </br>
-The following database objects and corresponding Data Factory/Synapse pipeline artifacts help to load datasets in slices. The slice size can be defined by the consumer and it is possible to re-run slices if the transfer is not successful.
+
+### Meta data database objects
+
+The following database objects and corresponding Data Factory/Synapse pipeline artifacts help to load datasets in slices. 
 </br>
 The core of the solutions build a small metadata/control table. A few Views/Store Procedures and Data Factory/Sypanpse pipelines are then used to transfer data and log the activity in the metadata table.
 </br>
