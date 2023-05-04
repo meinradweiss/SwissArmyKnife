@@ -7,7 +7,7 @@ AS
 BEGIN
     -- Update LastStart to the current time
     UPDATE [Core].[SlicedImportObject]
-    SET [LastSuccessEnd]   = GETUTCDATE()
+    SET [LastSuccessEnd]   = NULL
        ,[LastErrorMessage]  = @Error
     WHERE [SlicedImportObject_Id] = @SlicedImportObject_Id;
 

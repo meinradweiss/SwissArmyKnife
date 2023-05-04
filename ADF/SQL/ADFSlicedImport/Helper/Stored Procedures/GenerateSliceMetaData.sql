@@ -14,6 +14,7 @@ CREATE PROCEDURE [Helper].[GenerateSliceMetaData] (
 		   ,@ContainerName           sysname   
 		   ,@AlternativeRootFolder   sysname   = NULL  -- If provided, then this value is used, insetad of the @SourceSystemName to create the directory path,
 		   ,@MaxRowsPerFile          int       = NULL
+           ,@IngestionMappingName    sysname   = NULL
 
 		   ) 
 AS
@@ -152,6 +153,7 @@ BEGIN
            ,[DestinationFileName]
            ,[MaxRowsPerFile]
            ,[AdditionalContext]
+           ,[IngestionMappingName]
 		   )
        SELECT  
             @SourceSystemName  AS [SourceSystemName]
@@ -180,6 +182,7 @@ BEGIN
            ,@MaxRowsPerFile    AS [MaxRowsPerFile]
            ,CONCAT('{"creationTime": "', CONVERT(VARCHAR, @TheDate) ,'","tags":["Source:PipelineLoad"]}')  -- Take the last day of the month       
 		                       AS [AdditionalContext]
+           ,@IngestionMappingName AS [IngestionMappingName]
 
 
 

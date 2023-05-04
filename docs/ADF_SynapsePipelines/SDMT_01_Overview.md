@@ -6,6 +6,48 @@
 If data is migrated from an on-premises system to a modern data warehouse or in an Azure Data eXplorer (ADX) database, then often historical data, must be migrated to the new data services in Azure. </br>
 The sliced data migration toolbox provides framework components to simplify the data migration.
 
+</br>
+</br>
+
+### Main Benefits of the toolbox
+
+The toolbox provides the following main benefits
+
+ * Huge datasets can be loaded in well defined slices
+ * Slices can be loaded parallel (pipeline defines how many parallel loads are executed)
+   * Data transfer workload can scale out over different integration runtimes to optimise performance
+ * If a slice fails, then it can be restarted, without data duplication
+ * Transfer is logged in the meta data database (duration, number of rows transferred)
+ * If an ADX cluster is the target, than `creationTime` is set correctly and also the following `tags` are added 
+   * "`Source`:PipelineLoad"
+   * "`LoadedAt`:\<UTC date of data load\>",
+   * "`SlicedImportObject_Id`:\<SlicedImportObject_Id of the slice \>"] 
+ * Very simple and cost efficient ADF/Synapse pipelines
+   * No complex logic within the pipelines
+   * Full flexibility to extend and integrate the pipelines, accoriding to the project requirements 
+
+
+</br>
+
+### Common transfer stages
+
+Depending on the shape of the pipeline you can choose one of the following options:
+ * SQL Source[^2] -> Database destination (e.g. SQL, PostgreSQL, ADX, ...) [^3] 
+ * SQL Source[^2] -> Data lake -> Database destination (e.g. SQL, PostgreSQL, ADX, ...)[^3] 
+
+![TransferScenarios](images/SDMT_TransferScenarios.png "Supported transfer scenarios")
+
+
+</br>
+
+
+[^1]: Data data type is expected. 
+[^2]: Any SQL source that supports ANSI SQL. 
+[^3]: Any pipeline sink that supports insert/apppend. Samples provided for Azure SQL and Azure Data Explorer.
+
+</br>
+</br>
+
 ### Meta data
 
 The backend of the toolbox is build in an Azure SQL Database and the real data transfer will be handled either by an Azure Data Factory or a Synapse pipeline.
@@ -19,35 +61,13 @@ The toolbox allows you to define:
  * Slice size (day or month)
  * Max number of rows (for optional raw data parquet file in the data lake)
 
-### Common transfer stages
+</br>
 
-Depending on the shape of the pipeline you can choose one of the following options:
- * SQL Source[^2] -> Database destination (e.g. SQL, PostgreSQL, ADX, ...) [^3] 
- * SQL Source[^2] -> Data lake -> Database destination (e.g. SQL, PostgreSQL, ADX, ...)[^3] 
-
-### Main Benefits of the toolbox
-
-The toolbox provides the following main benefits
-
- * Huge datasets can be loaded in well defined slices
- * Slices can be loaded parallel (pipeline defines how many parallel loads are executed)
- * If a slice fails, then it can be restarted, without data duplication
- * Transfer is logged in the meta data database (duration, number of rows transferred)
- * If an ADX cluster is the target, than `creationTime` is set correctly and also the following `tags` are added 
-   * "Source:PipelineLoad"
-   * "LoadedAt:\<UTC date of data load\>",
-   * "SlicedImportObject_Id:\<SlicedImportObject_Id of the slice \>"] 
-
-
-
-
-[^1]: Data data type is expected. 
-[^2]: Any SQL source that supports ANSI SQL. 
-[^3]: Any pipeline sink that supports insert/apppend. Samples provided for Azure SQL and Azure Data Explorer.
+![Overview](images/SDMT_Overview.png "Overview")
 
 </br>
 </br>
-</br>
+
 
 ### Meta data database objects
 
@@ -86,10 +106,11 @@ The core of the solutions build a small metadata/control table. A few Views/Stor
 </br>
 
 
-| SlicedImportObject_Id | SourceSystemName | SourceSchema | SourceObject    | GetDataCommand                                                                                             | FilterDataCommand         | DestinationSchema             | DestinationObject | ContainerName    | DestinationPath                                                                         | DestinationFileName              | DestinationPostfix | DestinationFileFormat | MaxRowsPerFile | AdditionalContext       | LastStart             | LastSuccessEnd        | RowsTransferred | LastErrorMessage | CreatedBy                      | CreatedAt               |
-|-----------------------|------------------|--------------|----------------|------------------------------------------------------------------------------------------------------------|---------------------------|-------------------------------|-------------------|-----------------|-----------------------------------------------------------------------------------------|----------------------------------|--------------------|-----------------------|----------------|------------------------|-----------------------|-----------------------|----------------|------------------|--------------------------------|------------------------|
-| 37C8B38B-B913-4593-B1F2-68EDCB5DC60F | AdventureWorksLT | SalesLT      | SalesOrderHeader | "SELECT [SalesOrderID], [RevisionNumber], [OrderDate], [Status] FROM [SalesLT].[SalesOrderHeader]" | WHERE [SalesOrderID] < 71815 | AdventureWorksLT_SalesLT_Sliced | SalesOrderHeader  | adf-to-powerbi  | raw/SlicedImport/AdventureWorksLT/SalesLT/SalesOrder/SalesOrderID_lt71815 | SalesOrderHeader_lt71815 | NULL               | .parquet              | 5              | NULL                   | NULL | NULL | NULL              | NULL             | XYZ@microsoft.com | 2023-04-24 13:02:44.487 |
-| 2A1ACA0A-F6F4-4E66-8210-BDA581CD28B8 | AdventureWorksLT | SalesLT      | SalesOrderHeader | "SELECT [SalesOrderID], [RevisionNumber], [OrderDate], [Status] FROM [SalesLT].[SalesOrderHeader]" | WHERE [SalesOrderID] >= 71815 | AdventureWorksLT_SalesLT_Sliced | SalesOrderHeader  | adf-to-powerbi  | raw/SlicedImport/AdventureWorksLT/SalesLT/SalesOrder/SalesOrderID_ge71815 | SalesOrderHeader_ge71815 | NULL               | .parquet              | 5              | NULL                   | NULL | NULL | NULL             | NULL             | XYZ@microsoft.com | 2023-04-24 13:02:44.493 |
+|SlicedImportObject_Id|SourceSystemName|SourceSchema|SourceObject|GetDataCommand|FilterDataCommand|DestinationSchema|DestinationObject|ContainerName|DestinationPath|DestinationFileName|MaxRowsPerFile|AdditionalContext|Active|LastStart|LastSuccessEnd|RowsTransferred|LastErrorMessage|CreatedBy|CreatedAt|
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|942dc3dd-c3e9-ed11-8e89-000d3a22bf79|AdventureWorksLT|SalesLT|Product|SELECT [ProductID], [Name], [ProductNumber], [Color], [SellStartDate] FROM [SalesLT].[Product]|WHERE [SellStartDate] &gt;= CONVERT(DATETIME, &#39;2002-06-01&#39;,120) AND [SellStartDate]  &lt; CONVERT(DATETIME, &#39;2002-07-01&#39;,120)|SalesLT_SDMT|Product|adftopowerbi|AdventureWorksLT/SalesLT/Product/2002/06/01|AdventureWorksLT_SalesLT_Product_20020601_20020630|NULL|{&quot;creationTime&quot;: &quot;2002-06-01&quot;,&quot;tags&quot;:[&quot;Source:PipelineLoad&quot;]}|1|2023-05-03 15:05:29.650|NULL|NULL|NULL|xxx.yyy@microsoft.com|2023-05-03 15:04:57.670|
+|952dc3dd-c3e9-ed11-8e89-000d3a22bf79|AdventureWorksLT|SalesLT|Product|SELECT [ProductID], [Name], [ProductNumber], [Color], [SellStartDate] FROM [SalesLT].[Product]|WHERE [SellStartDate] &gt;= CONVERT(DATETIME, &#39;2002-07-01&#39;,120) AND [SellStartDate]  &lt; CONVERT(DATETIME, &#39;2002-08-01&#39;,120)|SalesLT_SDMT|Product|adftopowerbi|AdventureWorksLT/SalesLT/Product/2002/07/01|AdventureWorksLT_SalesLT_Product_20020701_20020731|NULL|{&quot;creationTime&quot;: &quot;2002-07-01&quot;,&quot;tags&quot;:[&quot;Source:PipelineLoad&quot;]}|1|2023-05-03 15:05:30.723|2023-05-03 15:06:05.353|0|NULL|xxx.yyy@microsoft.com|2023-05-03 15:04:57.677|
+
 
 
 ### Sample data for a data transfer from a relational database to an Azure Data Explorer
@@ -238,3 +259,21 @@ The stored procedure called `[Helper].[GenerateSliceMetaData]` can be used to cr
 |@AlternativeRootFolder|sysname|NULL   |If provided, then this value is used instead of the @SourceSystemName to create the directory path.|
 |@MaxRowsPerFile|int         |NULL     |The maximum number of rows to include in each slice file. |
 
+
+| Name                    | Data Type    | Purpose                                               |
+|-------------------------|--------------|-------------------------------------------------------|
+| @LowWaterMark           | DATE         | Lower date boundary (inclusive)                       |
+| @HigWaterMark           | DATE         | Upper date boundary (exclusive)                       |
+| @Resolution             | VARCHAR(25)  | Time resolution (day or month)                        |
+| @SourceSystemName       | sysname      | Source system name                                    |
+| @SourceSchema           | sysname      | Source schema name                                    |
+| @SourceObject           | sysname      | Source object name                                    |
+| @GetDataCommand         | nvarchar(max)| Data retrieval command                                |
+| @DateFilterAttributeName| sysname      | Date filter attribute name                            |
+| @DateFilterAttributeType| sysname      | Date filter attribute type                            |
+| @DestinationSchema      | sysname      | Destination schema name                               |
+| @DestinationObject      | sysname      | Destination object name                               |
+| @ContainerName          | sysname      | Container name                                        |
+| @AlternativeRootFolder  | sysname      | Alternative root folder (optional)                    |
+| @MaxRowsPerFile         | int          | Maximum number of rows per file (optional)           |
+| @IngestionMappingName   | sysname      | Ingestion mapping name (optional)                     |

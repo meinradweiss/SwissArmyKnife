@@ -16,6 +16,7 @@ AS
       ,[DestinationFileFormat]
       ,[MaxRowsPerFile]
       ,[AdditionalContext]
+      ,[IngestionMappingName]
       ,[LastStart]
       ,[LastSuccessEnd]
       ,DATEDIFF(SECOND, [LastStart], [LastSuccessEnd]) AS DurationInSecond
