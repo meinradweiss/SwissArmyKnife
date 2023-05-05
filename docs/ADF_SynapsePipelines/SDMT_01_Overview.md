@@ -9,6 +9,12 @@ The sliced data migration toolbox provides framework components to simplify the 
 </br>
 </br>
 
+![TransferScenarios](images/SDMT_Iceberg.png "Iceberg")
+
+
+</br>
+</br>
+
 ### Main Benefits of the toolbox
 
 The toolbox provides the following main benefits
@@ -18,13 +24,13 @@ The toolbox provides the following main benefits
    * Data transfer workload can scale out over different integration runtimes to optimise performance
  * If a slice fails, then it can be restarted, without data duplication
  * Transfer is logged in the meta data database (duration, number of rows transferred)
- * If an ADX cluster is the target, than `creationTime` is set correctly and also the following `tags` are added 
+ * If an ADX cluster is the target, then `creationTime` is set correctly and also the following `tags` are added 
    * "`Source`:PipelineLoad"
    * "`LoadedAt`:\<UTC date of data load\>",
    * "`SlicedImportObject_Id`:\<SlicedImportObject_Id of the slice \>"] 
  * Very simple and cost efficient ADF/Synapse pipelines
    * No complex logic within the pipelines
-   * Full flexibility to extend and integrate the pipelines, accoriding to the project requirements 
+   * Full flexibility to extend and integrate the pipelines, according to the project requirements 
 
 
 </br>
@@ -32,18 +38,19 @@ The toolbox provides the following main benefits
 ### Common transfer stages
 
 Depending on the shape of the pipeline you can choose one of the following options:
- * SQL Source[^2] -> Database destination (e.g. SQL, PostgreSQL, ADX, ...) [^3] 
- * SQL Source[^2] -> Data lake -> Database destination (e.g. SQL, PostgreSQL, ADX, ...)[^3] 
+ * SQL Source[^1] -> Database destination (e.g. SQL, PostgreSQL, ADX, ...) [^2] 
+ * SQL Source[^1] -> Data lake -> Database destination (e.g. SQL, PostgreSQL, ADX, ...)[^2] 
 
 ![TransferScenarios](images/SDMT_TransferScenarios.png "Supported transfer scenarios")
 
 
 </br>
+</br>
 
 
-[^1]: Data data type is expected. 
-[^2]: Any SQL source that supports ANSI SQL. 
-[^3]: Any pipeline sink that supports insert/apppend. Samples provided for Azure SQL and Azure Data Explorer.
+[^1]: Any SQL source that is supported by ADF/Synpase pipelines. 
+[^2]: Any pipeline sink that supports insert/apppend. Samples provided for Azure SQL and Azure Data Explorer.
+[^3]: Date type is expected in the implemented sample. 
 
 </br>
 </br>
@@ -57,13 +64,30 @@ The toolbox allows you to define:
  * Destination object
  * Start date 
  * End date
- * Filter attribute name [^1]
+ * Filter attribute name [^3]
  * Slice size (day or month)
  * Max number of rows (for optional raw data parquet file in the data lake)
 
 </br>
 
 ![Overview](images/SDMT_Overview.png "Overview")
+
+</br>
+</br>
+
+
+
+### Meta data database objects
+
+For a direct transfer of the data slices just 5 (SQL Target) or 7 (ADX Target with error logging) are required.
+
+#### Direct transfer to Azure SQL Database
+
+![Overview](images/SDMT_DirectTransferToSQL.png "DirectTransferToSQL")
+
+#### Direct transfer to Azure ADX Database
+
+![Overview](images/SDMT_DirectTransferToADX.png "DirectTransferToADX")
 
 </br>
 </br>
