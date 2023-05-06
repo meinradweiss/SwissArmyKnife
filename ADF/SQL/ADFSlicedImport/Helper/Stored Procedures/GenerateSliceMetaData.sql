@@ -9,7 +9,7 @@ CREATE PROCEDURE [Helper].[GenerateSliceMetaData] (
 		   ,@GetDataCommand          nvarchar (max)
 		   ,@DateFilterAttributeName sysname
 		   ,@DateFilterAttributeType sysname
-		   ,@DestinationSchema       sysname
+		   ,@DestinationSchema       sysname   = 'n/a'
 		   ,@DestinationObject       sysname
 		   ,@ContainerName           sysname   
 		   ,@AlternativeRootFolder   sysname   = NULL  -- If provided, then this value is used, insetad of the @SourceSystemName to create the directory path,

@@ -14,7 +14,7 @@
     [MaxRowsPerFile]        INT              NULL,
     [AdditionalContext]     VARCHAR (255)    NULL, -- e.g. for ADX '{"creationTime": "2022.01.01"}'
     [IngestionMappingName]  [sysname]        NULL,
-    [Active]                BIT              DEFAULT (1) NOT NULL,
+    [Active]                BIT              DEFAULT ((1)) NOT NULL,
     [LastStart]             DATETIME         NULL,
     [LastSuccessEnd]        DATETIME         NULL,
     [RowsTransferred]       INT              NULL,
