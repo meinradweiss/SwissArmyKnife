@@ -11,29 +11,35 @@ The core of the solutions build a small metadata/control table. A few Views/Stor
 </br>
 ## Meatadata/Control Database Table
 
-|Attribute name | Data type | Null | Default | Description |
-| --- | --- | --- | --- | --- |
-| [SlicedImportObject_Id]  |UNIQUEIDENTIFIER | NOT NULL | newid() | Primary key of the table. If it is not specified, then the system provides a value. |
-| [SourceSystemName]      |  [sysname]        |  NOT NULL  |                      | String to identify objects that belong together | 
-| [SourceSchema]          |  [sysname]        |  NOT NULL  |                      | Name of the schema in the source database. Used for documentation purpose. | 
-| [SourceObject]          |  [sysname]        |  NOT NULL  |  | Name of the source table/view in the source system. Used for documentation purpose. | 
-| [GetDataCommand]        |  NVARCHAR (MAX)   |  NULL      |                      |  select statement to read data from the source system. The attribute that can be used to slice the table must be included in the select list. A select * from table/view is valid, if all attributes should be transferred.               | 
-| [FilterDataCommand]     |  NVARCHAR (1024)  |  NULL      |                      | Where condition to slice the data. It must start with the WHERE keyword. </br> The [FilterDataCommand] will be concatenated with the [GetDataCommand] to fetch data. | 
-| [DestinationSchema]     |  [sysname]        |  NOT NULL  |                      | Schema name in the destination database.                 | 
-| [DestinationObject]     |  [sysname]        |  NOT NULL  |                      | Table name in the destination database.                | 
-| [ContainerName]         |  [sysname]        |  NULL      |                      | Container name in the datalake.                 | 
-| [DestinationPath]       |  [sysname]        |  NULL      |                      | Directory path in the data lake e.g. raw/AdventureWorks/Sales/Product/202201                | 
-| [DestinationFileName]   |  [sysname]        |  NULL      |                      | Filename (without extension)                | 
-| [DestinationPostfix]    |  [sysname]        |  NULL      |                      |                 | 
-| [DestinationFileFormat] |  VARCHAR (10)     |  NOT NULL  | ('.parquet')         |                 | 
-| [MaxRowsPerFile]        |  INT              |  NULL      |                      | Maximal number of rows per File in data lake               | 
-| [AdditionalContext]      |  VARCHAR (255)    |  NULL      |                      | e.g. for ADX '{"creationTime": "2022.01.01"}'     | 
-| [LastStart]             |  DATETIME         |  NULL      |                      | Last start of transfer pipeline for this slice                | 
-| [LastSuccessEnd]        |  DATETIME         |  NULL      |                      | Last succesful end to end data transfer of this slice                | 
-| [RowsTransferred]       |  INT              |  NULL      |                      | Number of rows transferred | 
-| [LastErrorMessage]      |  NVARCHAR (MAX)   |  NULL      |                      | Last known error                | 
-
 </br>
+
+
+| Attribute Name          | Data Type         | Null    | Default                      | Description                                              |
+|-------------------------|-------------------|---------|------------------------------|----------------------------------------------------------|
+| SlicedImportObject_Id   | UNIQUEIDENTIFIER  | NOT NULL| newsequentialid()            | Unique identifier for the sliced import object.           |
+| SourceSystemName        | sysname           | NOT NULL|                              | Name of the source system. Used to group slices          |
+| SourceSchema            | sysname           | NOT NULL|                              | Schema of the source object.                             |
+| SourceObject            | sysname           | NOT NULL|                              | Name of the source object.                               |
+| GetDataCommand          | NVARCHAR(MAX)     | NULL    |                              | Select statement to read data from the source system. The attribute that can be used to slice the table must be included in the select list. </br> A select * from table/view is valid, if all attributes should be transferred.                 |
+| FilterDataCommand       | NVARCHAR(1024)    | NULL    |                              | Command to filter the retrieved data. It must start with the WHERE keyword. </br> The [FilterDataCommand] will be concatenated with the [GetDataCommand] to fetch data.                   |
+| DestinationSchema       | sysname           | NOT NULL|                              | Schema of the destination object.                        |
+| DestinationObject       | sysname           | NOT NULL|                              | Name of the destination object.                          |
+| ContainerName           | sysname           | NULL    |                              | Name of the container for storage.                       |
+| DestinationPath         | sysname           | NULL    |                              | Path to the destination location. e.g. raw/AdventureWorks/Sales/Product/202201.                        |
+| DestinationFileName     | sysname           | NULL    |                              | Name of the destination file (without extension) .       |
+| DestinationFileFormat   | VARCHAR(10)       | NOT NULL| '.parquet'                   | File format of the destination file.                     |
+| MaxRowsPerFile          | INT               | NULL    |                              | Maximum number of rows per file.                         |
+| AdditionalContext       | VARCHAR(255)      | NULL    |                              | Additional context information. e.g. for ADX '{"creationTime": "2022.01.01"}'. |
+| IngestionMappingName    | sysname           | NULL    |                              | Name of the (ADX) ingestion mapping.                           |
+| Active                  | BIT               | NOT NULL| 1                            | Flag indicating whether the object is active or not.     |
+| LastStart               | DATETIME          | NULL    |                              | Timestamp of the last start.                             |
+| LastSuccessEnd          | DATETIME          | NULL    |                              | Timestamp of the last successful end.                    |
+| RowsTransferred         | INT               | NULL    |                              | Number of rows transferred.                              |
+| LastErrorMessage        | NVARCHAR(MAX)     | NULL    |                              | Last error message encountered.                          |
+| CreatedBy               | sysname           | NOT NULL| suser_sname()                | Name of the user who created the object.                 |
+| CreatedAt               | DATETIME          | NOT NULL| getutcdate()                 | Timestamp of when the object was created.                |
+
+
 
 ### Sample data for a data transfer from a relational database, via data lake to another relational database
 </br>
@@ -62,34 +68,23 @@ The most important column from ADX perspective is `AdditionalContext` there you 
 
 ## Stored Procedures
 
-| Name                        | Description |
-|-----------------------------| ---|
-| GetSetSlicedImportObjectToLoad | Get a list of slices that should be loaded |
-| ResetSlicedImportObject       | Reset a single slice or all slices for a specified SourceSystem |
-| SetSlicedImportObjectStart    | Mark a slice as transfer started |
-| SetSlicedImportObjectEnd      | Mark a slice as successfully transferred |
-| SetSlicedImportObjectError    | Mark a slice as transfer started |
-| GetADXDropExtentsCommand | Get ADX/KQL command to drop existing extents |
-
-</br>
-
-
-
-
-
-
 
 ------
-
 
 ## [Core].[GetSetSlicedImportObjectToLoad]
 
 This stored procedure retrieves a list of sliced import objects to load based on the specified source system name and mode.
 
-| Parameter Name | Data Type | Purpose |
-| -------------- | --------- | ------- |
-| @SourceSystemName | sysname | The name of the source system to retrieve sliced import objects for. |
-| @Mode | VARCHAR(25) | An optional parameter to specify the mode of operation. </br> If set to `REGULAR`, the procedure will only retrieve sliced import objects where the `LastStart` column is null. </br> If set to `RESTART`, it will only retrieve sliced import objects where the `LastStart` column is not null and the `LastSuccessEnd` column is null. </br> If set to `ALL`, it will retrieve all sliced import objects regardless of their status. |
+**Parameters:**
+
+| Name                       | Data Type   | Default Value | Purpose                                                                 |
+|----------------------------|-------------|---------------|-------------------------------------------------------------------------|
+| @SourceSystemName          | sysname     |               | The name of the source system. If only this value is provided, then all slices with this name will be retrieved.                                         |
+| @SourceSchema              | sysname     | '%'           | The schema of the source object.                                        |
+| @SourceObject              | sysname     | '%'           | The name of the source object.                                          |
+| @SlicedImportObject_Id     | varchar(64) | '%'           | The ID of the sliced import object.                                     |
+| @Mode                      | VARCHAR(25) | 'REGULAR'     | An optional parameter to specify the mode of operation. </br> If set to `REGULAR`, the procedure will only retrieve sliced import objects where the `LastStart` column is null. </br> If set to `RESTART`, it will only retrieve sliced import objects where the `LastStart` column is not null and the `LastSuccessEnd` column is null. </br> If set to `ALL`, it will retrieve all sliced import objects regardless of their status. |
+
 
 </br>
 
@@ -167,46 +162,34 @@ The stored procedure returns a result set with a single column named 'DropExtend
 
 
 </br>
-
-## [Helper].[GenerateSliceMetaData]
-
-The stored procedure called `[Helper].[GenerateSliceMetaData]` can be used to create the necessary metadata for slicing large data sets into smaller pieces based on a specified resolution, date range, and maximum number of rows per file, if data will be stored in the data lake. 
-
+</br>
 </br>
 
 
-|Parameter Name | Data Type   | Default | Description |
-|---------------|-------------|---------|-------------|
-|@LowWaterMark  |DATE         |'2022.01.01'|The lower bound of the date range to generate slices for.|
-|@HigWaterMark  |DATE         |'2022.03.01'|The upper bound of the date range to generate slices for.|
-|@Resolution    |VARCHAR(25)  |'day'    |The time interval at which to generate slices. Valid values are 'day' and 'month'.|
-|@SourceSystemName|sysname    |N/A      |The name of the source system for the data.|
-|@SourceSchema  |sysname      |N/A      |The name of the schema containing the source object.|
-|@SourceObject  |sysname      |N/A      |The name of the source object.|
-|@GetDataCommand|nvarchar(max)|N/A      |The SQL command used to retrieve the source data.|
-|@DateFilterAttributeName|sysname|N/A |The name of the attribute in the source data that contains the date.|
-|@DateFilterAttributeType|sysname|N/A |The data type of the date attribute.|
-|@DestinationSchema|sysname   |N/A      |The name of the destination schema.|
-|@DestinationObject|sysname   |N/A      |The name of the destination object.|
-|@ContainerName |sysname      |N/A      |The name of the container where the sliced data will be stored.|
-|@AlternativeRootFolder|sysname|NULL   |If provided, then this value is used instead of the @SourceSystemName to create the directory path.|
-|@MaxRowsPerFile|int         |NULL     |The maximum number of rows to include in each slice file. |
+## [Helper].[GenerateSliceMetaData]
+
+This stored procedure generates slice metadata based on the provided parameters. It creates slices of the source object based on the specified resolution (day or month) within the given date range. The generated metadata includes information such as source system name, source schema, source object, data commands, filter commands, destination schema, destination object, container name, destination path, destination file name, maximum rows per file, additional context, and ingestion mapping name.
+
+### Parameters
+
+| Name                      | Data Type     | Default Value | Purpose                                                                                      |
+|---------------------------|---------------|---------------|----------------------------------------------------------------------------------------------|
+| @LowWaterMark             | DATE          | '2022.01.01'  | The lower bound of the date range (inclusive).                                                |
+| @HigWaterMark             | DATE          | '2022.03.01'  | The upper bound of the date range (exclusive).                                                |
+| @Resolution               | VARCHAR(25)   | 'day'         | The resolution of the slices to be generated (either 'day' or 'month').                       |
+| @SourceSystemName         | sysname       |               | The name of the source system.                                                               |
+| @SourceSchema             | sysname       |               | The name of the source schema.                                                               |
+| @SourceObject             | sysname       |               | The name of the source object.                                                               |
+| @GetDataCommand           | nvarchar(max) |               | The command used to retrieve data from the source object.                                     |
+| @DateFilterAttributeName  | sysname       |               | The name of the attribute used as a date filter in the filter command.                        |
+| @DateFilterAttributeType  | sysname       |               | The data type of the date filter attribute.                                                   |
+| @DestinationSchema        | sysname       | 'n/a'         | The name of the destination schema. If 'n/a', it indicates no specific destination schema.    |
+| @DestinationObject        | sysname       |               | The name of the destination object.                                                          |
+| @ContainerName            | sysname       |               | The name of the container where the slices will be stored.                                    |
+| @AlternativeRootFolder    | sysname       | NULL          | If provided, this value is used instead of the @SourceSystemName to create the directory path. |
+| @MaxRowsPerFile           | int           | NULL          | The maximum number of rows per file. If NULL, there is no limit.                              |
+| @IngestionMappingName     | sysname       | NULL          | The name of the ingestion mapping to be used. If NULL, no specific mapping is specified.      |
 
 
-| Name                    | Data Type    | Purpose                                               |
-|-------------------------|--------------|-------------------------------------------------------|
-| @LowWaterMark           | DATE         | Lower date boundary (inclusive)                       |
-| @HigWaterMark           | DATE         | Upper date boundary (exclusive)                       |
-| @Resolution             | VARCHAR(25)  | Time resolution (day or month)                        |
-| @SourceSystemName       | sysname      | Source system name                                    |
-| @SourceSchema           | sysname      | Source schema name                                    |
-| @SourceObject           | sysname      | Source object name                                    |
-| @GetDataCommand         | nvarchar(max)| Data retrieval command                                |
-| @DateFilterAttributeName| sysname      | Date filter attribute name                            |
-| @DateFilterAttributeType| sysname      | Date filter attribute type                            |
-| @DestinationSchema      | sysname      | Destination schema name                               |
-| @DestinationObject      | sysname      | Destination object name                               |
-| @ContainerName          | sysname      | Container name                                        |
-| @AlternativeRootFolder  | sysname      | Alternative root folder (optional)                    |
-| @MaxRowsPerFile         | int          | Maximum number of rows per file (optional)           |
-| @IngestionMappingName   | sysname      | Ingestion mapping name (optional)                     |
+</br>
+</br>
