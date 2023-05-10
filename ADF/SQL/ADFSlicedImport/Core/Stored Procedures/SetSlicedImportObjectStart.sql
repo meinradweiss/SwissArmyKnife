@@ -10,6 +10,7 @@ BEGIN
     SET [LastStart] = GETUTCDATE()
        ,[LastSuccessEnd] = NULL
        ,[LastErrorMessage] = NULL
+	   ,[RowsTransferred] = NULL
     WHERE [SlicedImportObject_Id] = @SlicedImportObject_Id;
 
     -- Select all attributes for the given SlicedImportObject_Id
