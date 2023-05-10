@@ -11,7 +11,7 @@ CREATE PROCEDURE [Helper].[GenerateSliceMetaData] (
 		   ,@DateFilterAttributeType sysname
 		   ,@DestinationSchema       sysname   = 'n/a'
 		   ,@DestinationObject       sysname
-		   ,@ContainerName           sysname   
+		   ,@ContainerName           sysname   = 'n/a' 
 		   ,@AlternativeRootFolder   sysname   = NULL  -- If provided, then this value is used, insetad of the @SourceSystemName to create the directory path,
 		   ,@MaxRowsPerFile          int       = NULL
            ,@IngestionMappingName    sysname   = NULL

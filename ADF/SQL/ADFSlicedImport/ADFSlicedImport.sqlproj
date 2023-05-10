@@ -175,10 +175,16 @@
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="Security\Helper.sql" />
+    <None Include="Script\BuildingTelemetry_SQLtoLakeSingleFileToADX.sql" />
+    <Build Include="Mart\Views\SuspectSlicedImportObject.sql">
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <None Include="Script\BuildingTelemetry_SQLtoLakeMultipleFileToADX.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Script\SQLTestData.sql" />
     <None Include="SqlSchemaCompare1.scmp" />
-    <None Include="Script\TelemetryTestData.sql" />
+    <None Include="Script\BuildingTelemetry_SQLtoADX.sql" />
   </ItemGroup>
 </Project>

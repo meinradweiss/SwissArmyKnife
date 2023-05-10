@@ -34,7 +34,7 @@ SELECT * FROM [Core].[Measurement]
     DECLARE  @LowWaterMark     DATE         = '2021-11-25'   -- GE
             ,@HigWaterMark     DATE         = '2021-11-28'   -- LT   
             ,@Resolution       VARCHAR(25)  = 'Day'   -- Day/Month
-     	    ,@SourceSystemName sysname      = 'BuildingTelemetry'
+     	    ,@SourceSystemName sysname      = 'BuildingTelemetry_SQLtoADX'
      	    ,@ContainerName    sysname      = 'adftopowerbi'
        
     EXEC [Helper].[GenerateSliceMetaData] 
@@ -51,6 +51,6 @@ SELECT * FROM [Core].[Measurement]
      		,@ContainerName           = @ContainerName
 
 
-select *
-from [Core].[SlicedImportObject]
-where SourceSystemName  = 'BuildingTelemetry'
+SELECT *
+FROM   [Core].[SlicedImportObject]
+WHERE  SourceSystemName  = 'BuildingTelemetry_SQLtoADX'
