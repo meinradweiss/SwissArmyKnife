@@ -24,7 +24,8 @@ AS
       ,[IngestionMappingName]
       ,[LastStart]
       ,[LastSuccessEnd]
-      ,DATEDIFF(SECOND, [LastStart], COALESCE([LastSuccessEnd], GETUTCDATE())) AS [DurationInSecond]
+      ,[LastErrorEnd]
+      ,DATEDIFF(SECOND, [LastStart], COALESCE([LastSuccessEnd], [LastErrorEnd], GETUTCDATE())) AS [DurationInSecond]
       ,[RowsTransferred]
       ,[LastErrorMessage]
       ,[CreatedBy]
@@ -49,12 +50,14 @@ AS
       ,[IngestionMappingName]
       ,[LastStart]
       ,[LastSuccessEnd]
+      ,[LastErrorEnd]
       ,[DurationInSecond]
       ,[RowsTransferred]
       ,[LastErrorMessage]
-      ,CASE WHEN [LastStart] IS     NULL                                  THEN 'Ready to load'
-	        WHEN [LastStart] IS NOT NULL AND [LastSuccessEnd] IS     NULL THEN 'Loading'
-	        WHEN [LastStart] IS NOT NULL AND [LastSuccessEnd] IS NOT NULL THEN 'Successfully load'
+      ,CASE WHEN [LastStart] IS     NULL                                                                     THEN 'Ready to load'
+	        WHEN [LastStart] IS NOT NULL AND [LastSuccessEnd] IS     NULL AND [LastErrorMessage] IS     NULL THEN 'Loading'
+	        WHEN [LastStart] IS NOT NULL AND [LastSuccessEnd] IS     NULL AND [LastErrorMessage] IS NOT NULL THEN 'Stopped with Error'
+	        WHEN [LastStart] IS NOT NULL AND [LastSuccessEnd] IS NOT NULL                                    THEN 'Successfully load'
        END  AS [LoadStatus]
       ,[CreatedBy]
       ,[CreatedAt]

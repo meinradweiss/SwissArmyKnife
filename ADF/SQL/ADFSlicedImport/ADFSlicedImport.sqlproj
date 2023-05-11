@@ -181,6 +181,7 @@
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <None Include="Script\BuildingTelemetry_SQLtoLakeMultipleFileToADX.sql" />
+    <None Include="Script\FatoryEdge_ToLake.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Script\SQLTestData.sql" />

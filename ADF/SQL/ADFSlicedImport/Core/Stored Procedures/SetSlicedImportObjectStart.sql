@@ -8,9 +8,10 @@ BEGIN
     -- Update LastStart to the current time
     UPDATE [Core].[SlicedImportObject]
     SET [LastStart] = GETUTCDATE()
-       ,[LastSuccessEnd] = NULL
+       ,[LastSuccessEnd]   = NULL
+	   ,[LastErrorEnd]     = NULL
        ,[LastErrorMessage] = NULL
-	   ,[RowsTransferred] = NULL
+	   ,[RowsTransferred]  = NULL
     WHERE [SlicedImportObject_Id] = @SlicedImportObject_Id;
 
     -- Select all attributes for the given SlicedImportObject_Id

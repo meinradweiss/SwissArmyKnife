@@ -26,7 +26,7 @@ SELECT * FROM [Core].[Measurement]
 
 /* ADX destination
 
-.create table Measurement (Ts:datetime, SignalName:string, MeasurementValue:real)
+.create table Measurement (Ts:datetime, SignalName:string, MeasurementValue:decimal)
 
 
 */
@@ -52,5 +52,5 @@ SELECT * FROM [Core].[Measurement]
 
 
 SELECT *
-FROM   [Core].[SlicedImportObject]
+FROM   [Mart].[SlicedImportObject]
 WHERE  SourceSystemName  = 'BuildingTelemetry_SQLtoADX'

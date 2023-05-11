@@ -25,6 +25,7 @@ SELECT
       ,[SlicedImportObject].[FilterDataCommand]
       ,[SlicedImportObject].[LastStart]
       ,[SlicedImportObject].[LastSuccessEnd]
+      ,[SlicedImportObject].[LastErrorEnd]
       ,[SlicedImportObject].[DurationInSecond]
 	  ,'Suspect'        AS  [LoadStatus] 
 FROM [Mart].[SlicedImportObject]         

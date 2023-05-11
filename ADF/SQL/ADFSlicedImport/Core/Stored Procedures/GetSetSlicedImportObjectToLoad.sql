@@ -17,12 +17,13 @@ BEGIN
 	,[SourceObject] 
   FROM  [Core].[SlicedImportObject]
   WHERE [SourceSystemName] = @SourceSystemName
-    AND ((@Mode = 'REGULAR'  AND	[LastStart] IS NULL)
-     OR (@Mode = 'RESTART'  AND	[LastStart] IS NOT NULL AND [LastSuccessEnd] IS NULL)
-     OR (@Mode = 'ALL'))
+    AND ((@Mode = 'REGULAR'  AND [LastStart] IS NULL)
+     OR  (@Mode = 'RESTART'  AND [LastStart] IS NOT NULL AND [LastSuccessEnd] IS NULL)
+     OR  (@Mode = 'ALL'))
     AND [SourceSchema] LIKE @SourceSchema
     AND [SourceObject] LIKE @SourceObject 
     AND CONVERT(VARCHAR(64), [SlicedImportObject_Id]) LIKE @SlicedImportObject_Id 
+    AND [Active] = 1
 
 
 END

@@ -17,6 +17,7 @@
     [Active]                BIT              DEFAULT ((1)) NOT NULL,
     [LastStart]             DATETIME         NULL,
     [LastSuccessEnd]        DATETIME         NULL,
+    [LastErrorEnd]          DATETIME         NULL,
     [RowsTransferred]       INT              NULL,
     [LastErrorMessage]      NVARCHAR (MAX)   NULL,
     [CreatedBy]             [sysname]        CONSTRAINT [Core_SlicedImportObject_createdby_df] DEFAULT (suser_sname()) NOT NULL,

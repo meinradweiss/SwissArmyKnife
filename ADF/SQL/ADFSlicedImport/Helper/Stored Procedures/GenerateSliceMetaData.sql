@@ -166,12 +166,12 @@ BEGIN
            ,@DestinationSchema AS [DestinationSchema]
            ,@DestinationObject AS [DestinationObject]
            ,@ContainerName     AS [ContainerName]
-           ,CONCAT(COALESCE(@AlternativeRootFolder, @SourceSystemName),'/',@SourceSchema,'/',@SourceObject,'/'
+           ,CONCAT(COALESCE(@AlternativeRootFolder, @SourceSystemName),'/',@DestinationSchema,'/',@DestinationObject,'/'
 		                                                                    , CONVERT(VARCHAR, DATEPART(YEAR,  @TheDate))     ,'/'
 		                                                        ,RIGHT('00' + CONVERT(VARCHAR, DATEPART(MONTH, @TheDate)), 2) ,'/'
 		                                                        ,RIGHT('00' + CONVERT(VARCHAR, DATEPART(DAY,   @TheDate)), 2) 
 				  ) AS [DestinationPath]
-           ,CONCAT(@SourceSystemName,'_',@SourceSchema,'_',@SourceObject,'_', CONVERT(VARCHAR, DATEPART(YEAR,  @TheDate))     
+           ,CONCAT(@DestinationSchema,'_',@DestinationObject,'_',@SourceObject,'_', CONVERT(VARCHAR, DATEPART(YEAR,  @TheDate))     
 		                                                        ,RIGHT('00' + CONVERT(VARCHAR, DATEPART(MONTH, @TheDate)), 2) 
 		                                                        ,RIGHT('00' + CONVERT(VARCHAR, DATEPART(DAY,   @TheDate)), 2) 
 			       ,CASE WHEN @Resolution = 'Month' THEN CONCAT('_',          CONVERT(VARCHAR, DATEPART(YEAR,  DATEADD(DAY, -1, @NextDate)))     
@@ -179,6 +179,7 @@ BEGIN
 		                                                        ,RIGHT('00' + CONVERT(VARCHAR, DATEPART(DAY,   DATEADD(DAY, -1, @NextDate))), 2) 
 																) ELSE '' END)
                                AS [DestinationFileName]
+
            ,@MaxRowsPerFile    AS [MaxRowsPerFile]
            ,CONCAT('{"creationTime": "', CONVERT(VARCHAR, @TheDate) ,'","tags":["Source:PipelineLoad"]}')  -- Take the last day of the month       
 		                       AS [AdditionalContext]
