@@ -15,6 +15,8 @@
     [AdditionalContext]     VARCHAR (255)    NULL, -- e.g. for ADX '{"creationTime": "2022.01.01"}'
     [IngestionMappingName]  [sysname]        NULL,
     [Active]                BIT              DEFAULT ((1)) NOT NULL,
+    [PipelineRunId]         VARCHAR(128)     NULL,
+    [ExtentFingerprint]     VARCHAR(128)     NULL,
     [LastStart]             DATETIME         NULL,
     [LastSuccessEnd]        DATETIME         NULL,
     [LastErrorEnd]          DATETIME         NULL,

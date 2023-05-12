@@ -1,5 +1,4 @@
-﻿
-CREATE PROCEDURE [Helper].[GenerateSliceMetaData] (
+﻿CREATE PROCEDURE [Helper].[GenerateSliceMetaData] (
             @LowWaterMark DATE = '2022.01.01'   -- GE
            ,@HigWaterMark DATE = '2022.03.01'   -- LT
     	   ,@Resolution   VARCHAR(25) = 'day'   -- Day/Month
@@ -19,81 +18,6 @@ CREATE PROCEDURE [Helper].[GenerateSliceMetaData] (
 		   ) 
 AS
 BEGIN
-    
-	/* Usage
-
-    DECLARE 
-                @LowWaterMark     DATE        = '2002-06-01'   -- GE
-               ,@HigWaterMark     DATE        = '2002-07-05'   -- LT   05
-        	   ,@Resolution       VARCHAR(25) = 'Day'   -- Day/Month
-    		   ,@SourceSystemName sysname     = 'AdventureWorksLT_ADX'
-    		   ,@ContainerName    sysname     = 'N/A'
-    
-    
-    EXEC [Helper].[GenerateSliceMetaData] 
-                @LowWaterMark            = @LowWaterMark
-               ,@HigWaterMark            = @HigWaterMark
-               ,@Resolution              = @Resolution
-               ,@SourceSystemName        = @SourceSystemName
-    		   ,@SourceSchema            = 'SalesLT'
-    		   ,@SourceObject            = 'Product'
-    		   ,@GetDataCommand          = 'SELECT [ProductID], [Name], [ProductNumber], [Color], [SellStartDate] FROM [SalesLT].[Product]'
-    		   ,@DateFilterAttributeName = '[SellStartDate]'
-    		   ,@DateFilterAttributeType = 'DATETIME'
-    		   ,@DestinationSchema       = 'N/A'
-    		   ,@DestinationObject       = 'Product'
-    		   ,@ContainerName           = @ContainerName
-    		   ,@AlternativeRootFolder   = NULL
-    		   ,@MaxRowsPerFile          = NULL
-
-    GO
-
-     DECLARE    @LowWaterMark     DATE         = '2002-06-01'   -- GE
-               ,@HigWaterMark     DATE         = '2002-08-01'   -- LT   05
-        	   ,@Resolution       VARCHAR(25)  = 'Month'   -- Day/Month
-    		   ,@SourceSystemName sysname      = 'AdventureWorksLT'
-    		   ,@ContainerName    sysname      = 'adftopowerbi'
-    
-
-
-
-    EXEC [Helper].[GenerateSliceMetaData] 
-                @LowWaterMark            = @LowWaterMark
-               ,@HigWaterMark            = @HigWaterMark
-               ,@Resolution              = @Resolution
-               ,@SourceSystemName        = @SourceSystemName
-    		   ,@SourceSchema            = 'SalesLT'
-    		   ,@SourceObject            = 'Customer'
-    		   ,@GetDataCommand          = 'SELECT * FROM [SalesLT].[Customer]'
-    		   ,@DateFilterAttributeName = '[RegistrationDate]'
-    		   ,@DateFilterAttributeType = 'DATETIME'
-    		   ,@DestinationSchema       = 'SalesLT_SDMT'
-    		   ,@DestinationObject       = 'Customer'
-    		   ,@ContainerName           = @ContainerName
-    		   ,@AlternativeRootFolder   = NULL
-    		   ,@MaxRowsPerFile          = NULL
-
-    EXEC [Helper].[GenerateSliceMetaData] 
-                @LowWaterMark            = @LowWaterMark
-               ,@HigWaterMark            = @HigWaterMark
-               ,@Resolution              = @Resolution
-               ,@SourceSystemName        = @SourceSystemName
-    		   ,@SourceSchema            = 'SalesLT'
-    		   ,@SourceObject            = 'Customer'
-    		   ,@GetDataCommand          = 'SELECT * FROM [SalesLT].[Customer]'
-    		   ,@DateFilterAttributeName = '[RegistrationDate]'
-    		   ,@DateFilterAttributeType = 'DATETIME'
-    		   ,@DestinationSchema       = 'SalesLT_SDMT'
-    		   ,@DestinationObject       = 'Customer'
-    		   ,@ContainerName           = @ContainerName
-    		   ,@AlternativeRootFolder   = NULL
-    		   ,@MaxRowsPerFile          = NULL
-
-
-
-
-	*/
-
 
     
     DECLARE @NumberOfDays   INT
@@ -154,6 +78,7 @@ BEGIN
            ,[MaxRowsPerFile]
            ,[AdditionalContext]
            ,[IngestionMappingName]
+           ,[ExtentFingerprint]
 		   )
        SELECT  
             @SourceSystemName  AS [SourceSystemName]
@@ -181,11 +106,19 @@ BEGIN
                                AS [DestinationFileName]
 
            ,@MaxRowsPerFile    AS [MaxRowsPerFile]
-           ,CONCAT('{"creationTime": "', CONVERT(VARCHAR, @TheDate) ,'","tags":["Source:PipelineLoad"]}')  -- Take the last day of the month       
+           ,CONCAT('{"creationTime": "', CONVERT(VARCHAR, @TheDate) ,'"}')  -- Take the last day of the month       
 		                       AS [AdditionalContext]
            ,@IngestionMappingName AS [IngestionMappingName]
 
 
+           ,CONCAT(              CONVERT(VARCHAR, DATEPART(YEAR,  @TheDate))     
+		           ,RIGHT('00' + CONVERT(VARCHAR, DATEPART(MONTH, @TheDate)), 2) 
+		           ,RIGHT('00' + CONVERT(VARCHAR, DATEPART(DAY,   @TheDate)), 2) 
+			       ,CASE WHEN @Resolution = 'Month' THEN CONCAT('_',          CONVERT(VARCHAR, DATEPART(YEAR,  DATEADD(DAY, -1, @NextDate)))     
+		                                                        ,RIGHT('00' + CONVERT(VARCHAR, DATEPART(MONTH, DATEADD(DAY, -1, @NextDate))), 2) 
+		                                                        ,RIGHT('00' + CONVERT(VARCHAR, DATEPART(DAY,   DATEADD(DAY, -1, @NextDate))), 2) 
+																) ELSE '' END)
+                               AS [ExtentFingerprint]
 
 
 
