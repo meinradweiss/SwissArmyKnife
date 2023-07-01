@@ -182,6 +182,7 @@
     </Build>
     <None Include="Script\BuildingTelemetry_SQLtoLakeMultipleFileToADX.sql" />
     <None Include="Script\FatoryEdge_ToLake.sql" />
+    <None Include="Script\BuildingTelemetry_SQLtoADXusingADXFetch.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Script\SQLTestData.sql" />

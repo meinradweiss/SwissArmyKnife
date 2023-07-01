@@ -15,6 +15,7 @@
     [AdditionalContext]     VARCHAR (255)    NULL, -- e.g. for ADX '{"creationTime": "2022.01.01"}'
     [IngestionMappingName]  [sysname]        NULL,
     [Active]                BIT              DEFAULT ((1)) NOT NULL,
+    [TransferMode]          VARCHAR(128)     NOT NULL DEFAULT ('DatasetTransfer'),
     [PipelineRunId]         VARCHAR(128)     NULL,
     [ExtentFingerprint]     VARCHAR(128)     NULL,
     [LastStart]             DATETIME         NULL,
@@ -25,6 +26,7 @@
     [CreatedBy]             [sysname]        CONSTRAINT [Core_SlicedImportObject_createdby_df] DEFAULT (suser_sname()) NOT NULL,
     [CreatedAt]             DATETIME         CONSTRAINT [Core_SlicedImportObject_createdat_df] DEFAULT (getutcdate()) NOT NULL,
     CONSTRAINT [Core_SlicedImportObject_pk] PRIMARY KEY CLUSTERED ([SlicedImportObject_Id] ASC),
-    CONSTRAINT [Core_SlicedImportObject_uk_Destination] UNIQUE NONCLUSTERED ([SourceSystemName], [SourceSchema] ASC, [SourceObject] ASC, [FilterDataCommand] ASC)
+    CONSTRAINT [Core_SlicedImportObject_uk_Destination] UNIQUE NONCLUSTERED ([SourceSystemName], [SourceSchema] ASC, [SourceObject] ASC, [FilterDataCommand] ASC), 
+    CONSTRAINT [CK_SlicedImportObject_TransferMode] CHECK ([TransferMode]='ADXFetch' OR [TransferMode]='DatasetTransfer')
 );
 

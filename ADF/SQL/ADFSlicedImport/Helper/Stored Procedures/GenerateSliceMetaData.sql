@@ -14,7 +14,7 @@
 		   ,@AlternativeRootFolder   sysname   = NULL  -- If provided, then this value is used, insetad of the @SourceSystemName to create the directory path,
 		   ,@MaxRowsPerFile          int       = NULL
            ,@IngestionMappingName    sysname   = NULL
-
+		   ,@TransferMode            varchar(128) = 'DatasetTransfer'
 		   ) 
 AS
 BEGIN
@@ -79,14 +79,18 @@ BEGIN
            ,[AdditionalContext]
            ,[IngestionMappingName]
            ,[ExtentFingerprint]
+           ,[TransferMode]  
 		   )
        SELECT  
             @SourceSystemName  AS [SourceSystemName]
            ,@SourceSchema      AS [SourceSchema]
            ,@SourceObject      AS [SourceObject]
            ,@GetDataCommand    AS [GetDataCommand]
-           ,CONCAT('WHERE ', @DateFilterAttributeName, ' >= CONVERT(', @DateFilterAttributeType ,', ''', CONVERT(VARCHAR, @TheDate,23),  ''',120) AND '
-	                       , @DateFilterAttributeName, '  < CONVERT(', @DateFilterAttributeType ,', ''', CONVERT(VARCHAR, @NextDate,23), ''',120)')       
+           ,CASE WHEN @TransferMode = 'DatasetTransfer' 
+		              THEN CONCAT('WHERE ', @DateFilterAttributeName, ' >= CONVERT(', @DateFilterAttributeType ,', ''', CONVERT(VARCHAR, @TheDate,23),  ''',120) AND '
+	                                      , @DateFilterAttributeName, '  < CONVERT(', @DateFilterAttributeType ,', ''', CONVERT(VARCHAR, @NextDate,23), ''',120)')  
+					  ELSE CONVERT(VARCHAR, @TheDate,112)
+			END 
 		                       AS [FilterDataCommand]
            ,@DestinationSchema AS [DestinationSchema]
            ,@DestinationObject AS [DestinationObject]
@@ -106,8 +110,9 @@ BEGIN
                                AS [DestinationFileName]
 
            ,@MaxRowsPerFile    AS [MaxRowsPerFile]
-           ,CONCAT('{"creationTime": "', CONVERT(VARCHAR, @TheDate) ,'"}')  -- Take the last day of the month       
-		                       AS [AdditionalContext]
+           ,CASE WHEN @TransferMode = 'DatasetTransfer' THEN CONCAT('{"creationTime": "', CONVERT(VARCHAR, @TheDate) ,'"}')  -- Take the last day of the month       
+                                                        ELSE CONCAT('creationTime="', CONVERT(VARCHAR, @TheDate) ,'"')    
+		    END                   AS [AdditionalContext]
            ,@IngestionMappingName AS [IngestionMappingName]
 
 
@@ -119,7 +124,7 @@ BEGIN
 		                                                        ,RIGHT('00' + CONVERT(VARCHAR, DATEPART(DAY,   DATEADD(DAY, -1, @NextDate))), 2) 
 																) ELSE '' END)
                                AS [ExtentFingerprint]
-
+			,@TransferMode
 
 
        FETCH NEXT FROM @SliceCursor INTO @TheDate, @NextDate;
@@ -132,3 +137,4 @@ BEGIN
     DEALLOCATE @SliceCursor;
 
 END
+GO
