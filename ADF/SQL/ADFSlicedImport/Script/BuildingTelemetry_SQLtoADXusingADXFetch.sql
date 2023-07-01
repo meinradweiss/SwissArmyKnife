@@ -16,7 +16,7 @@ Synpase Pipeline (and ADX) must have a login in the Azure SQL Database
 { 
 let tbl =  
      evaluate 
-       sql_request('Server=tcp:aamew4bg4iotsqlserver.database.windows.net,1433;Authentication="Active Directory Integrated";Initial Catalog=aamew4bg4iotsqldb',
+       sql_request('Server=tcp:<serverName>.database.windows.net,1433;Authentication="Active Directory Integrated";Initial Catalog=aamew4bg4iotsqldb',
                    strcat('select Measurement.* from Core.Measurement /*cross join core.signal */ where Ts_Day = ', Ts_Day))
                    : (Ts: datetime, Ts_Day: int, SignalId: int, MeasurementValue: real, MeasurementText: string, MeasurementContext: string, CreatedAt: datetime) 
                   ;
