@@ -5,7 +5,8 @@
            ,@SourceSystemName        sysname
 		   ,@SourceSchema            sysname
 		   ,@SourceObject            sysname
-		   ,@GetDataCommand          nvarchar (max)
+		   ,@GetDataCommand          nvarchar (max) = NULL
+           ,@GetDataADXCommand       nvarchar (max) = NULL
 		   ,@DateFilterAttributeName sysname
 		   ,@DateFilterAttributeType sysname
 		   ,@DestinationSchema       sysname   = 'n/a'
@@ -69,7 +70,9 @@ BEGIN
            ,[SourceSchema]
            ,[SourceObject]
            ,[GetDataCommand]
+           ,[GetDataADXCommand]
            ,[FilterDataCommand]
+           ,[FilterDataADXCommand]
            ,[DestinationSchema]
            ,[DestinationObject]
            ,[ContainerName]
@@ -86,12 +89,11 @@ BEGIN
            ,@SourceSchema      AS [SourceSchema]
            ,@SourceObject      AS [SourceObject]
            ,@GetDataCommand    AS [GetDataCommand]
-           ,CASE WHEN @TransferMode = 'DatasetTransfer' 
-		              THEN CONCAT('WHERE ', @DateFilterAttributeName, ' >= CONVERT(', @DateFilterAttributeType ,', ''', CONVERT(VARCHAR, @TheDate,23),  ''',120) AND '
+           ,@GetDataADXCommand AS [GetDataADXCommand]
+           ,CONCAT('WHERE ', @DateFilterAttributeName, ' >= CONVERT(', @DateFilterAttributeType ,', ''', CONVERT(VARCHAR, @TheDate,23),  ''',120) AND '
 	                                      , @DateFilterAttributeName, '  < CONVERT(', @DateFilterAttributeType ,', ''', CONVERT(VARCHAR, @NextDate,23), ''',120)')  
-					  ELSE CONVERT(VARCHAR, @TheDate,112)
-			END 
-		                       AS [FilterDataCommand]
+		                                                  AS [FilterDataCommand]
+           ,CONVERT(VARCHAR, @TheDate,112)                AS [FilterDataADXCommand]
            ,@DestinationSchema AS [DestinationSchema]
            ,@DestinationObject AS [DestinationObject]
            ,@ContainerName     AS [ContainerName]

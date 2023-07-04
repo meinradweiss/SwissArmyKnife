@@ -43,7 +43,7 @@ tbl
             ,@SourceSystemName        = @SourceSystemName
      	    ,@SourceSchema            = 'N/A'
      		,@SourceObject            = 'N/A'
-     		,@GetDataCommand          = 'Source_GetMeasurementFromSQL'
+     		,@GetDataADXCommand       = 'Source_GetMeasurementFromSQL'
      		,@DateFilterAttributeName = 'N/A'
      		,@DateFilterAttributeType = 'N/A' 
      		,@DestinationObject       = 'Core_Measurement'

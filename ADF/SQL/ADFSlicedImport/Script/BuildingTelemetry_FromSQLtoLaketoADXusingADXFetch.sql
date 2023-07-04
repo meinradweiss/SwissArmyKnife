@@ -64,29 +64,36 @@ external_table('Source_ExternalMeasurement')
 
 */
 
-    DECLARE  @LowWaterMark     DATE         = '2023-06-26'   -- GE
-            ,@HigWaterMark     DATE         = '2023-06-28'   -- LT   
+-- Metadata to fetch data from SQL Server, store it in the data lake slicedimport/multipleFileADX and then read it via external table and the function Source_GetMeasurementFromMultifileSource
+
+
+    DECLARE  @LowWaterMark     DATE         = '2021-11-25'   -- GE
+            ,@HigWaterMark     DATE         = '2021-11-28'   -- LT   
             ,@Resolution       VARCHAR(25)  = 'Day'   -- Day/Month
-     	    ,@SourceSystemName sysname      = 'LaketoADXusingADXFetch'
-     	    ,@ContainerName    sysname      = 'N/A'
-       
+     	    ,@SourceSystemName sysname      = 'FromSQLtoLaketoADXusingADXFetch'
+     	    ,@ContainerName    sysname      = 'slicedimport/multipleFileADX'
+            ,@MaxRowsPerFile   int          = 1
+
 
     EXEC [Helper].[GenerateSliceMetaData] 
              @LowWaterMark            = @LowWaterMark
             ,@HigWaterMark            = @HigWaterMark
             ,@Resolution              = @Resolution
             ,@SourceSystemName        = @SourceSystemName
-     	    ,@SourceSchema            = 'N/A'
-     		,@SourceObject            = 'N/A'
-     		,@GetDataADXCommand       = 'Source_GetMeasurementFromExternalMeasurement'
-     		,@DateFilterAttributeName = 'N/A'
-     		,@DateFilterAttributeType = 'N/A' 
-     		,@DestinationObject       = 'Core_Measurement'
+     	    ,@SourceSchema            = 'Core'
+     		,@SourceObject            = 'Measurement'
+     		,@GetDataCommand          = 'SELECT [Ts], [SignalName], [MeasurementValue] FROM [Core].[Measurement]'
+     		,@GetDataADXCommand       = 'Source_GetMeasurementFromMultifileSource'
+     		,@DateFilterAttributeName = '[Ts]'
+     		,@DateFilterAttributeType = 'DATETIME2(3)' -- Datatype should match to source table
+     		,@DestinationObject       = 'Measurement'
      		,@ContainerName           = @ContainerName
-            ,@TransferMode            = 'ADXFetch'
+            ,@MaxRowsPerFile          = @MaxRowsPerFile
+
+
 
 
 SELECT *
 FROM   [Mart].[SlicedImportObject]
-WHERE  SourceSystemName  = 'LaketoADXusingADXFetch'
+WHERE  SourceSystemName  = 'FromSQLtoLaketoADXusingADXFetch'
 

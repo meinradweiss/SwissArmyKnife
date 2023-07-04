@@ -28,9 +28,9 @@ BEGIN
 													, CONCAT(',"SlicedImportObject_Id:', CONVERT(VARCHAR(64), @SlicedImportObject_Id),'"')
 													, CONCAT(',"PipelineRun_Id:', CONVERT(VARCHAR(64), @PipelineRunId),'"')
 													, CONCAT(',"ExtentFingerprint:', [ExtentFingerprint],'"')
-													, CONCAT(',"SourceFunction:', [GetDataCommand],'"')
+													, CONCAT(',"SourceFunction:', [GetDataADXCommand],'"')
 													,  ']''', ')'   -- ["Source:PipelineLoad","Oid=xxx"]
-		         ,' <| ', [GetDataCommand], '(', [FilterDataCommand],')' ) AS [ADXFetchCommand]
+		         ,' <| ', [GetDataADXCommand], '(', [FilterDataADXCommand],')' ) AS [ADXFetchCommand]
 		,CONCAT('IF OBJECT_ID(''', QUOTENAME([DestinationSchema]), '.',QUOTENAME([DestinationObject]) ,''') IS NOT NULL DELETE FROM ', QUOTENAME([DestinationSchema]), '.',QUOTENAME([DestinationObject]), ' ', [FilterDataCommand]) AS [EmptyDestinationSliceCommand]
 	    ,[DestinationSchema] 
 	    ,[DestinationObject] 

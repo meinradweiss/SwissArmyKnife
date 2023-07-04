@@ -130,6 +130,7 @@
     <Folder Include="Helper\" />
     <Folder Include="Helper\Views\" />
     <Folder Include="Helper\Stored Procedures\" />
+    <Folder Include="Snapshots" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Core\Tables\SlicedImportObject.sql">
@@ -184,6 +185,7 @@
     <None Include="Script\FatoryEdge_ToLake.sql" />
     <None Include="Script\BuildingTelemetry_SQLtoADXusingADXFetch.sql" />
     <None Include="Script\BuildingTelemetry_LaketoADXusingADXFetch.sql" />
+    <None Include="Script\BuildingTelemetry_FromSQLtoLaketoADXusingADXFetch.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Script\SQLTestData.sql" />
