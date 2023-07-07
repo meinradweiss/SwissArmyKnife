@@ -83,7 +83,7 @@ external_table('Source_ExternalMeasurement')
      		,@DateFilterAttributeType = 'N/A' 
      		,@DestinationObject       = 'Core_Measurement'
      		,@ContainerName           = @ContainerName
-            ,@TransferMode            = 'ADXFetch'
+
 
 
 SELECT *

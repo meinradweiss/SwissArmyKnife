@@ -23,7 +23,7 @@ BEGIN
 	    ,[FilterDataCommand]
         ,CONCAT([GetDataCommand], ' ', [FilterDataCommand]) AS [SelectCommand]
 		,CONCAT('.set-or-append ', [DestinationObject]
-		         , ' with (', [AdditionalContext], ', tags=''['
+		         , ' with (', CONCAT('creationTime=''', JSON_VALUE(AdditionalContext,'$.creationTime'),''''), ', tags=''['
 				                                    , CONCAT('"LoadedAt:', CONVERT(VARCHAR,GETUTCDATE(),126),'"')  
 													, CONCAT(',"SlicedImportObject_Id:', CONVERT(VARCHAR(64), @SlicedImportObject_Id),'"')
 													, CONCAT(',"PipelineRun_Id:', CONVERT(VARCHAR(64), @PipelineRunId),'"')
@@ -45,20 +45,18 @@ BEGIN
 	    --   .show table <YourTable> extents
         --   | extend  Timestamp = todatetime(extract("LoadedAt='(.*)'", 1, Tags))
 
-       	,CASE WHEN [TransferMode] = 'DatasetTransfer' 
-		        THEN JSON_MODIFY(
-		               JSON_MODIFY(
-        	             JSON_MODIFY(
-        		             JSON_MODIFY([AdditionalContext], 'append $.tags', CONCAT('LoadedAt:', CONVERT(VARCHAR,GETUTCDATE(),126),''))
-        		                                             ,'append $.tags', CONCAT('SlicedImportObject_Id:', CONVERT(VARCHAR(64), @SlicedImportObject_Id),''))  
-        		 						            	     ,'append $.tags', CONCAT('PipelineRun_Id:', CONVERT(VARCHAR(64), @PipelineRunId),''))
-        										             ,'append $.tags', CONCAT('ExtentFingerprint:', [ExtentFingerprint],''))   
-                ELSE 'N/A'
-		 END												 AS [AdditionalContext]
+       	,JSON_MODIFY(
+               JSON_MODIFY(
+      	             JSON_MODIFY(
+       		             JSON_MODIFY([AdditionalContext], 'append $.tags', CONCAT('LoadedAt:', CONVERT(VARCHAR,GETUTCDATE(),126),''))
+       		                                             ,'append $.tags', CONCAT('SlicedImportObject_Id:', CONVERT(VARCHAR(64), @SlicedImportObject_Id),''))  
+       		 						            	     ,'append $.tags', CONCAT('PipelineRun_Id:', CONVERT(VARCHAR(64), @PipelineRunId),''))
+       										             ,'append $.tags', CONCAT('ExtentFingerprint:', [ExtentFingerprint],''))   
+	                                                                                                                        												         AS [AdditionalContext]
 
 
-		,CONCAT('.drop extents <| .show table ' , DestinationObject , ' extents where tags has ''' ,  CONCAT('ExtentFingerprint:', [ExtentFingerprint],'') ,'''' )          AS [ADX_DropExtentCommand]
-		,CONCAT('.show table ' , DestinationObject , ' extents where tags has ''' ,  CONCAT('ExtentFingerprint:', [ExtentFingerprint],'') ,''' | summarize RowCount=sum(RowCount)' ) AS [ADX_CountRowsInExtentCommand]
+		,CONCAT('.drop extents <| .show table ' , DestinationObject , ' extents where tags has ''' ,  CONCAT('ExtentFingerprint:', [ExtentFingerprint],'') ,'''' )                   AS [ADXDropExtentCommand]
+		,CONCAT('.show table ' , DestinationObject , ' extents where tags has ''' ,  CONCAT('ExtentFingerprint:', [ExtentFingerprint],'') ,''' | summarize RowCount=sum(RowCount)' ) AS [ADXCountRowsInExtentCommand]
 		,[IngestionMappingName]
 	    ,[LastStart] 
     FROM [Core].[SlicedImportObject]

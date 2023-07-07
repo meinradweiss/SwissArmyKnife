@@ -15,7 +15,6 @@
 		   ,@AlternativeRootFolder   sysname   = NULL  -- If provided, then this value is used, insetad of the @SourceSystemName to create the directory path,
 		   ,@MaxRowsPerFile          int       = NULL
            ,@IngestionMappingName    sysname   = NULL
-		   ,@TransferMode            varchar(128) = 'DatasetTransfer'
 		   ) 
 AS
 BEGIN
@@ -82,7 +81,6 @@ BEGIN
            ,[AdditionalContext]
            ,[IngestionMappingName]
            ,[ExtentFingerprint]
-           ,[TransferMode]  
 		   )
        SELECT  
             @SourceSystemName  AS [SourceSystemName]
@@ -112,9 +110,8 @@ BEGIN
                                AS [DestinationFileName]
 
            ,@MaxRowsPerFile    AS [MaxRowsPerFile]
-           ,CASE WHEN @TransferMode = 'DatasetTransfer' THEN CONCAT('{"creationTime": "', CONVERT(VARCHAR, @TheDate) ,'"}')  -- Take the last day of the month       
-                                                        ELSE CONCAT('creationTime="', CONVERT(VARCHAR, @TheDate) ,'"')    
-		    END                   AS [AdditionalContext]
+           , CONCAT('{"creationTime": "', CONVERT(VARCHAR, @TheDate) ,'"}')  -- Take the last day of the month       
+                                  AS [AdditionalContext]
            ,@IngestionMappingName AS [IngestionMappingName]
 
 
@@ -126,7 +123,7 @@ BEGIN
 		                                                        ,RIGHT('00' + CONVERT(VARCHAR, DATEPART(DAY,   DATEADD(DAY, -1, @NextDate))), 2) 
 																) ELSE '' END)
                                AS [ExtentFingerprint]
-			,@TransferMode
+
 
 
        FETCH NEXT FROM @SliceCursor INTO @TheDate, @NextDate;

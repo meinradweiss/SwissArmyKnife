@@ -48,7 +48,7 @@ tbl
      		,@DateFilterAttributeType = 'N/A' 
      		,@DestinationObject       = 'Core_Measurement'
      		,@ContainerName           = @ContainerName
-            ,@TransferMode            = 'ADXFetch'
+
 
 
 SELECT *
