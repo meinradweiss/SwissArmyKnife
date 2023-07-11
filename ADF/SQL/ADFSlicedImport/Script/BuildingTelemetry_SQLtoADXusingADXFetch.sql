@@ -30,24 +30,42 @@ tbl
 
 */
 
-    DECLARE  @LowWaterMark     DATE         = '2022-11-18'   -- GE
-            ,@HigWaterMark     DATE         = '2022-11-20'   -- LT   
-            ,@Resolution       VARCHAR(25)  = 'Day'   -- Day/Month
-     	    ,@SourceSystemName sysname      = 'SQLtoADXusingADXFetch'
-     	    ,@ContainerName    sysname      = 'N/A'
-       
-    EXEC [Helper].[GenerateSliceMetaData] 
-             @LowWaterMark            = @LowWaterMark
-            ,@HigWaterMark            = @HigWaterMark
-            ,@Resolution              = @Resolution
-            ,@SourceSystemName        = @SourceSystemName
-     	    ,@SourceSchema            = 'N/A'
-     		,@SourceObject            = 'N/A'
-     		,@GetDataADXCommand       = 'Source_GetMeasurementFromSQL'
-     		,@DateFilterAttributeName = 'N/A'
-     		,@DateFilterAttributeType = 'N/A' 
-     		,@DestinationObject       = 'Core_Measurement'
-     		,@ContainerName           = @ContainerName
+-- Minimal meta data if data is loaded via sql_plugin
+DECLARE  @LowWaterMark     DATE         = '2022-11-18'   -- GE
+        ,@HigWaterMark     DATE         = '2022-11-20'   -- LT   
+        ,@Resolution       VARCHAR(25)  = 'Day'   -- Day/Month
+ 	    ,@SourceSystemName sysname      = 'SQLtoADXusingADXFetch'
+   
+EXEC [Helper].[GenerateSliceMetaData] 
+         @LowWaterMark            = @LowWaterMark
+        ,@HigWaterMark            = @HigWaterMark
+        ,@Resolution              = @Resolution
+        ,@SourceSystemName        = @SourceSystemName
+ 		,@GetDataADXCommand       = 'Source_GetMeasurementFromSQL'
+ 		,@DestinationObject       = 'Core_Measurement'
+
+
+SELECT *
+FROM   [Mart].[SlicedImportObject]
+WHERE  SourceSystemName  = 'SQLtoADXusingADXFetch'
+
+GO
+
+-- If @SourceSchema and @SourceObject are also specified, then they can be used to restrict transfer to specific objects
+DECLARE  @LowWaterMark     DATE         = '2022-11-18'   -- GE
+        ,@HigWaterMark     DATE         = '2022-11-20'   -- LT   
+        ,@Resolution       VARCHAR(25)  = 'Day'   -- Day/Month
+ 	    ,@SourceSystemName sysname      = 'SQLtoADXusingADXFetch'
+   
+EXEC [Helper].[GenerateSliceMetaData] 
+         @LowWaterMark            = @LowWaterMark
+        ,@HigWaterMark            = @HigWaterMark
+        ,@Resolution              = @Resolution
+        ,@SourceSystemName        = @SourceSystemName
+		,@SourceSchema            = 'Core'
+ 		,@SourceObject            = 'Measurement'
+ 		,@GetDataADXCommand       = 'Source_GetMeasurementFromSQL'
+ 		,@DestinationObject       = 'Core_Measurement'
 
 
 

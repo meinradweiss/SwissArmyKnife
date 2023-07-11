@@ -1,14 +1,14 @@
 ﻿CREATE TABLE [Core].[SlicedImportObject] (
     [SlicedImportObject_Id] UNIQUEIDENTIFIER CONSTRAINT [Core_SlicedImportObject_id_df] DEFAULT (newsequentialid()) NOT NULL,
     [SourceSystemName]      [sysname]        NOT NULL,
-    [SourceSchema]          [sysname]        NOT NULL,
-    [SourceObject]          [sysname]        NOT NULL,
+    [SourceSchema]          [sysname]        NULL,
+    [SourceObject]          [sysname]        NULL,
     [GetDataCommand]        NVARCHAR (MAX)   NULL,
-    [GetDataADXCommand]     NVARCHAR (MAX)   NULL,
     [FilterDataCommand]     NVARCHAR (1024)  NULL,
-    [FilterDataADXCommand]  VARCHAR    (10)  NULL,
-    [DestinationSchema]     [sysname]        NOT NULL,
-    [DestinationObject]     [sysname]        NOT NULL,
+    [GetDataADXCommand]     NVARCHAR (MAX)   NULL,
+    [FilterDataADXCommand]  VARCHAR  (10)    NULL,
+    [DestinationSchema]     [sysname]        NULL,
+    [DestinationObject]     [sysname]        NULL,
     [ContainerName]         [sysname]        NULL,
     [DestinationPath]       [sysname]        NULL,
     [DestinationFileName]   [sysname]        NULL,
@@ -27,6 +27,5 @@
     [CreatedBy]             [sysname]        CONSTRAINT [Core_SlicedImportObject_createdby_df] DEFAULT (suser_sname()) NOT NULL,
     [CreatedAt]             DATETIME         CONSTRAINT [Core_SlicedImportObject_createdat_df] DEFAULT (getutcdate()) NOT NULL,
     CONSTRAINT [Core_SlicedImportObject_pk] PRIMARY KEY CLUSTERED ([SlicedImportObject_Id] ASC),
-    CONSTRAINT [Core_SlicedImportObject_uk_Destination] UNIQUE NONCLUSTERED ([SourceSystemName], [SourceSchema] ASC, [SourceObject] ASC, [FilterDataCommand] ASC), 
 );
 
