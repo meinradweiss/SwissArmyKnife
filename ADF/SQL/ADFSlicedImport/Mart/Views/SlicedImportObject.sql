@@ -33,7 +33,8 @@ AS
         ,[RowsTransferred]      
         ,[LastErrorMessage]     
         ,[CreatedBy]            
-        ,[CreatedAt]            
+        ,[ValidFrom]
+        ,[ValidTo]  
   FROM [Core].[SlicedImportObject]
 ) 
    SELECT
@@ -69,5 +70,6 @@ AS
 	        WHEN [LastStart] IS NOT NULL AND [LastSuccessEnd] IS NOT NULL                                    THEN 'Successfully load'
        END  AS [LoadStatus]
       ,[CreatedBy]
-      ,[CreatedAt]
+      ,[ValidFrom]
+      ,[ValidTo]  
   FROM SourcePlusDuration

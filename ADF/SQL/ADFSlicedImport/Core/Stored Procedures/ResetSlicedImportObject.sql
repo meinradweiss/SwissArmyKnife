@@ -6,6 +6,8 @@ CREATE PROCEDURE [Core].[ResetSlicedImportObject]
 )
 AS
 BEGIN
+  SET NOCOUNT ON
+
   IF (@SourceSystemName IS NOT NULL OR @SlicedImportObject_Id IS NOT NULL)
   BEGIN
     UPDATE [Core].[SlicedImportObject]

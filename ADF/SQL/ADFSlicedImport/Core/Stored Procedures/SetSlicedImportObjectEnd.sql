@@ -4,6 +4,8 @@ CREATE PROCEDURE [Core].[SetSlicedImportObjectEnd]
     ,@RowsTransferred int
 AS
 BEGIN
+  SET NOCOUNT ON
+
     -- Update LastStart to the current time
     UPDATE [Core].[SlicedImportObject]
     SET [LastSuccessEnd]   = GETUTCDATE()

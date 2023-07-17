@@ -25,7 +25,13 @@
     [RowsTransferred]       INT              NULL,
     [LastErrorMessage]      NVARCHAR (MAX)   NULL,
     [CreatedBy]             [sysname]        CONSTRAINT [Core_SlicedImportObject_createdby_df] DEFAULT (suser_sname()) NOT NULL,
-    [CreatedAt]             DATETIME         CONSTRAINT [Core_SlicedImportObject_createdat_df] DEFAULT (getutcdate()) NOT NULL,
-    CONSTRAINT [Core_SlicedImportObject_pk] PRIMARY KEY CLUSTERED ([SlicedImportObject_Id] ASC),
+    [ValidFrom]             DATETIME2        GENERATED ALWAYS AS ROW START NOT NULL,
+    [ValidTo]               DATETIME2        GENERATED ALWAYS AS ROW END NOT NULL,
+    PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo),
+    CONSTRAINT [Core_SlicedImportObject_pk] PRIMARY KEY CLUSTERED ([SlicedImportObject_Id] ASC), 
+    CONSTRAINT [CK_SlicedImportObject_ValidSourceSpecification] CHECK ( (([SourceSchema]      IS NOT NULL) AND ([SourceObject] IS NOT NULL))
+	                                                                OR   ([GetDataCommand]    IS NOT NULL)
+	                                                                OR   ([GetDataADXCommand] IS NOT NULL)),
+)WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Core].[SlicedImportObjectHistory])
 );
 

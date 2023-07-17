@@ -3,6 +3,8 @@
    ,@PipelineRunId         VARCHAR(128) 
 AS
 BEGIN
+    SET NOCOUNT ON
+
     -- Update LastStart to the current time
     UPDATE [Core].[SlicedImportObject]
     SET [LastStart]        = GETUTCDATE()
@@ -52,9 +54,10 @@ BEGIN
                                                     ,'append $.tags', 'SlicedImportObject_Id:' + CONVERT(VARCHAR(64), @SlicedImportObject_Id))  
                                                     ,'append $.tags', 'PipelineRun_Id:' + CONVERT(VARCHAR(64), @PipelineRunId))
                                                     ,'append $.tags', 'ExtentFingerprint:' + [ExtentFingerprint])   
-                                                                                                                                                                                AS [AdditionalContext]
-        ,'.drop extents <| .show table ' + DestinationObject + ' extents where tags has ''' + 'ExtentFingerprint:' + [ExtentFingerprint] + ''''                                 AS [ADXDropExtentCommand]
-        ,'.show table ' + DestinationObject + ' extents where tags has ''' + 'PipelineRun_Id:' + CONVERT(VARCHAR(64), @PipelineRunId) + ''' | summarize RowCount=sum(RowCount)' AS [ADXCountRowsInExtentCommand]
+                                                                                                                                                                  AS [AdditionalContext]
+        ,'.drop extents <| .show table ' + DestinationObject + ' extents where tags has ''' + 'ExtentFingerprint:' + [ExtentFingerprint] + ''''                   AS [ADXDropExtentCommand]
+        ,'.show table ' + DestinationObject + ' extents where tags has ''' + 'PipelineRun_Id:'    + CONVERT(VARCHAR(64), @PipelineRunId) 
+                                                    + ''' and tags has ''' + 'ExtentFingerprint:' + [ExtentFingerprint] + ''' | summarize RowCount=sum(RowCount)' AS [ADXCountRowsInExtentCommand]
 		,[IngestionMappingName]
 	    ,[LastStart] 
     FROM [Core].[SlicedImportObject]

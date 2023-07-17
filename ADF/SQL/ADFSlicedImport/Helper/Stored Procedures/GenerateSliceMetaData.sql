@@ -19,6 +19,15 @@
 AS
 BEGIN
 
+    SET NOCOUNT ON
+
+	IF NOT  ( ((@SourceSchema      IS NOT NULL) AND (@SourceObject IS NOT NULL))
+	     OR   (@GetDataCommand    IS NOT NULL)
+	     OR   (@GetDataADXCommand IS NOT NULL))
+	BEGIN
+	  RAISERROR('Please provide either a value for @SourceSchema and @SourceObject or for @GetDataCommand or for @GetDataADXCommand',16,1,null)
+	  RETURN
+	END
     
     DECLARE @NumberOfDays   INT
            ,@NumberOfMonths INT
@@ -35,13 +44,14 @@ BEGIN
     
 
 	-- Delete existing slices of the same source object
-    DELETE 
-	FROM [Core].[SlicedImportObject] 
-	WHERE [SourceSystemName]  = @SourceSystemName 
-	  AND CONCAT([SourceSchema],'')      like COALESCE(@SourceSchema, '%')     
-	  AND CONCAT([SourceObject],'')      like COALESCE(@SourceObject, '%')         
-	  AND CONCAT([GetDataADXCommand],'') like COALESCE(@GetDataADXCommand, '%')         
+	EXEC [Helper].[DropExistingSliceMetaData]  @SourceSystemName   = @SourceSystemName
+	                                          ,@SourceSchema       = @SourceSchema
+											  ,@SourceObject       = @SourceObject
+											  ,@GetDataCommand     = @GetDataCommand
+											  ,@GetDataADXCommand  = @GetDataADXCommand
+											  ,@IncludeHistoryData = 0
 
+    -- Generate the meta data
 	DECLARE @SliceCursor CURSOR
 
 	IF  @Resolution  = 'Day'
@@ -143,3 +153,5 @@ BEGIN
 
 END
 GO
+
+

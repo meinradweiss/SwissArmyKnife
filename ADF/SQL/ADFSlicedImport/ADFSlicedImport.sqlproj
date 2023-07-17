@@ -186,6 +186,10 @@
     <None Include="Script\BuildingTelemetry_SQLtoADXusingADXFetch.sql" />
     <None Include="Script\BuildingTelemetry_LaketoADXusingADXFetch.sql" />
     <None Include="Script\BuildingTelemetry_FromSQLtoLaketoADXusingADXFetch.sql" />
+    <Build Include="Helper\Stored Procedures\DropExistingSliceMetaData.sql">
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
   </ItemGroup>
   <ItemGroup>
     <None Include="Script\SQLTestData.sql" />

@@ -5,6 +5,8 @@ CREATE PROCEDURE [Core].[SetSlicedImportObjectError]
     ,@Error NVARCHAR(MAX)
 AS
 BEGIN
+  SET NOCOUNT ON
+
     -- Update LastStart to the current time
     UPDATE [Core].[SlicedImportObject]
     SET [LastSuccessEnd]    = NULL
